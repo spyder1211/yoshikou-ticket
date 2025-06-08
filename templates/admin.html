@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}管理画面 - 海底二万マイル{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+    <h1><span class="emoji">⚙️</span>管理画面</h1>
+    <div class="nav-links">
+        <a href="/" class="nav-link">
+            <span class="emoji">🏠</span>予約画面
+        </a>
+        <a href="/admin/checkin" class="nav-link">
+            <span class="emoji">✅</span>チェックイン
+        </a>
+    </div>
+</div>
+
+<!-- 統計概要 -->
+<div class="stats-overview">
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total_reservations }}</div>
+        <div class="stat-label"><span class="emoji">📝</span>総予約者数</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total_checkins }}</div>
+        <div class="stat-label"><span class="emoji">✅</span>総来場者数</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.checkin_rate }}%</div>
+        <div class="stat-label"><span class="emoji">📈</span>来場率</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ stats.total_capacity }}</div>
+        <div class="stat-label"><span class="emoji">🏠</span>総定員数</div>
+    </div>
+</div>
+
+<!-- 時間帯管理 -->
+<div class="time-slots-section">
+    <h2 class="section-title">
+        <span class="emoji">⏰</span>時間帯別状況
+    </h2>
+    
+    {% for slot in timeslots %}
+    <div class="time-slot-admin">
+        <div class="time-info">{{ slot.time }}</div>
+        
+        <div class="slot-stats">
+            <div>予約: {{ slot.reserved }}/{{ slot.total }}名</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill progress-reserved" 
+                     style="width: {{ (slot.reserved / slot.total * 100) if slot.total > 0 else 0 }}%"></div>
+            </div>
+        </div>
+        
+        <div class="slot-stats">
+            <div>来場: {{ slot.checked }}名</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill progress-checked" 
+                     style="width: {{ (slot.checked / slot.reserved * 100) if slot.reserved > 0 else 0 }}%"></div>
+            </div>
+        </div>
+        
+        <div class="capacity-control">
+            <button class="capacity-btn" onclick="changeCapacity({{ loop.index0 }}, -1)">−</button>
+            <input type="number" class="capacity-input" 
+                   value="{{ slot.total }}" 
+                   min="0" max="50"
+                   onchange="updateCapacity({{ loop.index0 }}, this.value)">
+            <button class="capacity-btn" onclick="changeCapacity({{ loop.index0 }}, 1)">+</button>
+        </div>
+        
+        <button class="checkin-btn" 
+                onclick="goToCheckin('{{ slot.time }}', {{ slot.reserved }})"
+                {{ 'disabled' if slot.reserved == 0 else '' }}>
+            チェックイン
+        </button>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function changeCapacity(index, change) {
+    const input = document.querySelectorAll('.capacity-input')[index];
+    const newValue = Math.max(0, Math.min(50, parseInt(input.value) + change));
+    input.value = newValue;
+    updateCapacity(index, newValue);
+}
+
+async function updateCapacity(index, total) {
+    try {
+        const response = await fetch('/api/update_capacity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                index: index,
+                total: parseInt(total)
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // ページをリロードして最新状態を表示
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        } else {
+            alert('定員数の更新に失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('定員数の更新中にエラーが発生しました');
+    }
+}
+
+function goToCheckin(time, guests) {
+    if (guests === 0) {
+        alert('この時間帯には予約がありません');
+        return;
+    }
+    
+    const url = `/admin/checkin?time=${encodeURIComponent(time)}&guests=${guests}`;
+    window.location.href = url;
+}
+
+// 5秒ごとに統計を更新
+setInterval(() => {
+    location.reload();
+}, 5000);
+</script>
+{% endblock %} 

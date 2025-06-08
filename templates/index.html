@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}予約システム - 海底二万マイル{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
+{% block content %}
+<h1><span class="emoji">🌊</span>海底二万マイル 整理券予約システム</h1>
+
+{% if active_reservation %}
+<!-- 既存の予約がある場合の表示 -->
+<div class="ticket">
+    <h2><span class="emoji">🎫</span>あなたの整理券</h2>
+    <div class="qr-code">
+        <img src="{{ active_reservation.qr_code_image }}" alt="QRコード">
+    </div>
+    <div class="ticket-info">
+        <p><strong>予約時間:</strong> {{ active_reservation.time }}</p>
+        <p><strong>人数:</strong> {{ active_reservation.guests }}名</p>
+        <p><strong>予約日:</strong> {{ active_reservation.date }}</p>
+    </div>
+    <p>この画面をスタッフにお見せください</p>
+    <div class="mt-20">
+        <button onclick="cancelReservation()" class="btn btn-danger">
+            <span class="emoji">❌</span>予約をキャンセル
+        </button>
+    </div>
+</div>
+
+{% else %}
+<!-- 新規予約フォーム -->
+<div class="progress-bar">
+    <div class="progress-step active" id="progress-1">1</div>
+    <div class="progress-step" id="progress-2">2</div>
+    <div class="progress-step" id="progress-3">3</div>
+</div>
+
+<!-- ステップ1: 時間選択 -->
+<div id="step1" class="step active">
+    <h2><span class="emoji">⏰</span>時間帯を選択してください</h2>
+    <div class="time-slots">
+        {% for slot in timeslots %}
+        <div class="time-slot {{ 'disabled' if slot.available <= 0 else '' }}" 
+             onclick="selectTime('{{ slot.time }}', {{ slot.available }})"
+             data-time="{{ slot.time }}" data-available="{{ slot.available }}">
+            <div class="time-text">{{ slot.time }}</div>
+            <div class="availability">
+                {% if slot.available > 0 %}
+                    空き: {{ slot.available }}名
+                {% else %}
+                    満席
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="navigation">
+        <div></div>
+        <button onclick="goToStep2()" class="btn" id="next-step1" disabled>
+            次へ <span class="emoji">▶️</span>
+        </button>
+    </div>
+</div>
+
+<!-- ステップ2: 人数選択 -->
+<div id="step2" class="step">
+    <h2><span class="emoji">👥</span>人数を選択してください</h2>
+    <div class="guests-grid" id="guests-grid">
+        <!-- JavaScriptで動的に生成 -->
+    </div>
+    <div class="navigation">
+        <button onclick="goToStep1()" class="btn">
+            <span class="emoji">◀️</span> 戻る
+        </button>
+        <button onclick="goToStep3()" class="btn" id="next-step2" disabled>
+            次へ <span class="emoji">▶️</span>
+        </button>
+    </div>
+</div>
+
+<!-- ステップ3: 確認・予約 -->
+<div id="step3" class="step">
+    <h2><span class="emoji">✅</span>予約内容を確認してください</h2>
+    <div class="ticket-info">
+        <p><strong>予約時間:</strong> <span id="confirm-time"></span></p>
+        <p><strong>人数:</strong> <span id="confirm-guests"></span>名</p>
+        <p><strong>予約日:</strong> <span id="confirm-date"></span></p>
+    </div>
+    <div class="navigation">
+        <button onclick="goToStep2()" class="btn">
+            <span class="emoji">◀️</span> 戻る
+        </button>
+        <button onclick="confirmReservation()" class="btn btn-success">
+            <span class="emoji">🎫</span> 予約を確定する
+        </button>
+    </div>
+</div>
+
+<!-- 予約完了 -->
+<div id="step4" class="step">
+    <h2><span class="emoji">🎉</span>予約が完了しました！</h2>
+    <div class="ticket">
+        <h3><span class="emoji">🎫</span>あなたの整理券</h3>
+        <div class="qr-code" id="final-qr-code">
+            <!-- QRコードがここに表示されます -->
+        </div>
+        <div class="ticket-info">
+            <p><strong>予約時間:</strong> <span id="final-time"></span></p>
+            <p><strong>人数:</strong> <span id="final-guests"></span>名</p>
+            <p><strong>予約日:</strong> <span id="final-date"></span></p>
+        </div>
+        <p>この画面をスタッフにお見せください</p>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let selectedTime = null;
+let selectedGuests = null;
+let maxGuests = 0;
+
+function selectTime(time, available) {
+    if (available <= 0) return;
+    
+    // 既存の選択を解除
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.classList.remove('selected');
+    });
+    
+    // 新しい選択を設定
+    const slot = document.querySelector(`[data-time="${time}"]`);
+    slot.classList.add('selected');
+    
+    selectedTime = time;
+    maxGuests = available;
+    
+    document.getElementById('next-step1').disabled = false;
+}
+
+function selectGuests(guests) {
+    document.querySelectorAll('.guest-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    const btn = document.querySelector(`[data-guests="${guests}"]`);
+    btn.classList.add('selected');
+    
+    selectedGuests = guests;
+    document.getElementById('next-step2').disabled = false;
+}
+
+function goToStep1() {
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    document.getElementById('step1').classList.add('active');
+    
+    document.querySelectorAll('.progress-step').forEach(step => {
+        step.classList.remove('active', 'completed');
+    });
+    document.getElementById('progress-1').classList.add('active');
+}
+
+function goToStep2() {
+    if (!selectedTime) return;
+    
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    document.getElementById('step2').classList.add('active');
+    
+    document.getElementById('progress-1').classList.add('completed');
+    document.getElementById('progress-1').classList.remove('active');
+    document.getElementById('progress-2').classList.add('active');
+    
+    // 人数選択ボタンを生成
+    const guestsGrid = document.getElementById('guests-grid');
+    guestsGrid.innerHTML = '';
+    
+    for (let i = 1; i <= Math.min(maxGuests, 10); i++) {
+        const btn = document.createElement('div');
+        btn.className = 'guest-btn';
+        btn.setAttribute('data-guests', i);
+        btn.textContent = `${i}名`;
+        btn.onclick = () => selectGuests(i);
+        guestsGrid.appendChild(btn);
+    }
+}
+
+function goToStep3() {
+    if (!selectedGuests) return;
+    
+    document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+    document.getElementById('step3').classList.add('active');
+    
+    document.getElementById('progress-2').classList.add('completed');
+    document.getElementById('progress-2').classList.remove('active');
+    document.getElementById('progress-3').classList.add('active');
+    
+    // 確認内容を表示
+    document.getElementById('confirm-time').textContent = selectedTime;
+    document.getElementById('confirm-guests').textContent = selectedGuests;
+    document.getElementById('confirm-date').textContent = new Date().toLocaleDateString('ja-JP');
+}
+
+async function confirmReservation() {
+    try {
+        const response = await fetch('/api/reserve', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                time: selectedTime,
+                guests: selectedGuests
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // 予約完了画面を表示
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById('step4').classList.add('active');
+            
+            document.getElementById('progress-3').classList.add('completed');
+            
+            // 予約内容を表示
+            document.getElementById('final-time').textContent = result.reservation.time;
+            document.getElementById('final-guests').textContent = result.reservation.guests;
+            document.getElementById('final-date').textContent = result.reservation.date;
+            
+            // QRコードを表示
+            const qrCodeDiv = document.getElementById('final-qr-code');
+            qrCodeDiv.innerHTML = `<img src="${result.reservation.qr_code_image}" alt="QRコード">`;
+            
+            // 数秒後にページをリロード
+            setTimeout(() => {
+                location.reload();
+            }, 3000);
+        } else {
+            alert('予約に失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('予約中にエラーが発生しました');
+    }
+}
+
+async function cancelReservation() {
+    if (!confirm('予約をキャンセルしますか？')) return;
+    
+    try {
+        const response = await fetch('/api/cancel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('予約をキャンセルしました');
+            location.reload();
+        } else {
+            alert('キャンセルに失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('キャンセル中にエラーが発生しました');
+    }
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海底二万マイル - 管理者画面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(to bottom, #1e293b, #0f172a);
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            background: linear-gradient(to right, #1e40af, #0f766e);
+            color: white;
+            padding: 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #e2e8f0;
+        }
+
+        .time-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .time-slot-card {
+            background: #334155;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .time-slot-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #e2e8f0;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 8px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #475569;
+            color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #334155;
+        }
+
+
+
+        .capacity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .capacity-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #475569;
+            border: none;
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .capacity-btn:hover {
+            background: #60a5fa;
+        }
+
+        .capacity-input {
+            width: 50px;
+            text-align: center;
+            background: #475569;
+            border: 1px solid #64748b;
+            border-radius: 4px;
+            color: #e2e8f0;
+            padding: 4px;
+            font-size: 14px;
+        }
+
+        .capacity-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .stat-overview-card {
+            background: #334155;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.2s;
+        }
+
+        .stat-overview-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-overview-icon {
+            font-size: 32px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(96, 165, 250, 0.1);
+            border-radius: 50%;
+        }
+
+        .stat-overview-content {
+            flex: 1;
+        }
+
+        .stat-overview-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 4px;
+        }
+
+        .stat-overview-label {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>海底二万マイル - 管理者画面</h1>
+            <p>予約管理システム</p>
+        </div>
+
+        <div class="card">
+            <h2>📊 本日の統計</h2>
+            <div class="stats-overview">
+                <div class="stat-overview-card">
+                    <div class="stat-overview-icon">📝</div>
+                    <div class="stat-overview-content">
+                        <div class="stat-overview-number" id="totalReservations">0</div>
+                        <div class="stat-overview-label">総予約者数</div>
+                    </div>
+                </div>
+                <div class="stat-overview-card">
+                    <div class="stat-overview-icon">✅</div>
+                    <div class="stat-overview-content">
+                        <div class="stat-overview-number" id="totalCheckins">0</div>
+                        <div class="stat-overview-label">総来場者数</div>
+                    </div>
+                </div>
+                <div class="stat-overview-card">
+                    <div class="stat-overview-icon">📈</div>
+                    <div class="stat-overview-content">
+                        <div class="stat-overview-number" id="checkinRate">0</div>
+                        <div class="stat-overview-label">来場率（%）</div>
+                    </div>
+                </div>
+                <div class="stat-overview-card">
+                    <div class="stat-overview-icon">🏠</div>
+                    <div class="stat-overview-content">
+                        <div class="stat-overview-number" id="totalCapacity">150</div>
+                        <div class="stat-overview-label">総定員数</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⏰ 時間帯別予約状況・定員管理</h2>
+            <div class="time-slot-grid" id="timeSlotGrid">
+                <!-- 時間帯カードはJavaScriptで動的に生成 -->
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // 時間帯データ
+        let timeSlots = [
+            { time: '10:00 - 10:30', total: 15, reserved: 0, checked: 0 },
+            { time: '10:30 - 11:00', total: 15, reserved: 0, checked: 0 },
+            { time: '11:00 - 11:30', total: 15, reserved: 0, checked: 0 },
+            { time: '11:30 - 12:00', total: 15, reserved: 0, checked: 0 },
+            { time: '12:00 - 12:30', total: 15, reserved: 0, checked: 0 },
+            { time: '12:30 - 13:00', total: 15, reserved: 0, checked: 0 },
+            { time: '13:00 - 13:30', total: 15, reserved: 0, checked: 0 },
+            { time: '13:30 - 14:00', total: 15, reserved: 0, checked: 0 },
+            { time: '14:00 - 14:30', total: 15, reserved: 0, checked: 0 },
+            { time: '14:30 - 15:00', total: 15, reserved: 0, checked: 0 }
+        ];
+
+        // localStorageからデータを読み込み
+        function loadData() {
+            // 時間帯データを読み込み
+            const savedSlots = localStorage.getItem('timeSlots');
+            if (savedSlots) {
+                const savedSlotsData = JSON.parse(savedSlots);
+                timeSlots.forEach((slot, index) => {
+                    if (savedSlotsData[index]) {
+                        slot.total = savedSlotsData[index].total;
+                        slot.available = savedSlotsData[index].available;
+                    }
+                });
+            }
+
+            // 予約データから予約者数を計算
+            const reservations = JSON.parse(localStorage.getItem('reservations') || '[]');
+            timeSlots.forEach(slot => {
+                slot.reserved = 0;
+                slot.checked = 0;
+            });
+
+            reservations.forEach(reservation => {
+                if (reservation.status === 'active') {
+                    const slot = timeSlots.find(s => s.time === reservation.time);
+                    if (slot) {
+                        slot.reserved += reservation.guests;
+                    }
+                } else if (reservation.status === 'checked') {
+                    const slot = timeSlots.find(s => s.time === reservation.time);
+                    if (slot) {
+                        slot.reserved += reservation.guests;
+                        slot.checked += reservation.guests;
+                    }
+                }
+            });
+        }
+
+
+
+        // 時間帯カードの生成
+        function renderTimeSlots() {
+            const grid = document.getElementById('timeSlotGrid');
+            grid.innerHTML = '';
+
+            timeSlots.forEach((slot, index) => {
+                const card = document.createElement('div');
+                card.className = 'time-slot-card';
+                card.innerHTML = `
+                    <h3>${slot.time}</h3>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value">${slot.reserved}</div>
+                            <div class="stat-label">予約</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${slot.checked}</div>
+                            <div class="stat-label">来場</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">${slot.total - slot.reserved}</div>
+                            <div class="stat-label">空き</div>
+                        </div>
+                    </div>
+                    <div class="capacity-control">
+                        <button class="capacity-btn" onclick="changeCapacity(${index}, -1)">-</button>
+                        <input type="number" class="capacity-input" value="${slot.total}" 
+                               min="0" max="50" onchange="updateCapacity(${index}, this.value)">
+                        <button class="capacity-btn" onclick="changeCapacity(${index}, 1)">+</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // 定員数変更
+        function changeCapacity(index, delta) {
+            const newTotal = Math.max(0, Math.min(50, timeSlots[index].total + delta));
+            timeSlots[index].total = newTotal;
+            renderTimeSlots();
+            updateMainTimeSlots();
+        }
+
+        // 定員数直接更新
+        function updateCapacity(index, value) {
+            const newTotal = Math.max(0, Math.min(50, parseInt(value) || 0));
+            timeSlots[index].total = newTotal;
+            renderTimeSlots();
+            updateMainTimeSlots();
+        }
+
+        // メイン画面の時間帯データも同期更新
+        function updateMainTimeSlots() {
+            // 予約画面用のデータフォーマットに変換してlocalStorageに保存
+            const mainTimeSlots = timeSlots.map(slot => ({
+                time: slot.time,
+                total: slot.total,
+                available: slot.total - slot.reserved
+            }));
+            localStorage.setItem('timeSlots', JSON.stringify(mainTimeSlots));
+            console.log('定員が更新されました:', timeSlots);
+            updateOverallStats();
+        }
+
+        // 統計情報を更新
+        function updateOverallStats() {
+            let totalReservations = 0;
+            let totalCheckins = 0;
+            let totalCapacity = 0;
+
+            // 各時間帯の数値を合計
+            timeSlots.forEach(slot => {
+                totalReservations += slot.reserved;
+                totalCheckins += slot.checked;
+                totalCapacity += slot.total;
+            });
+
+            // 来場率を計算
+            const checkinRate = totalReservations > 0 ? Math.round((totalCheckins / totalReservations) * 100) : 0;
+
+            // UIを更新
+            document.getElementById('totalReservations').textContent = totalReservations;
+            document.getElementById('totalCheckins').textContent = totalCheckins;
+            document.getElementById('checkinRate').textContent = checkinRate;
+            document.getElementById('totalCapacity').textContent = totalCapacity;
+        }
+
+
+
+        // 初期表示
+        loadData();
+        renderTimeSlots();
+        updateOverallStats();
+
+        // 定期的にデータを更新（他の画面での変更を反映）
+        setInterval(() => {
+            loadData();
+            renderTimeSlots();
+            updateOverallStats();
+        }, 5000); // 5秒ごとに更新
+    </script>
+</body>
+</html> 

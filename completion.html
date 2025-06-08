@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海底二万マイル - チェックイン完了</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(to bottom, #1e293b, #0f172a);
+            min-height: 100vh;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .completion-card {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #10b981;
+        }
+
+        .info-section {
+            background: #334155;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #475569;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #94a3b8;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #e2e8f0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 24px;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            color: #94a3b8;
+            margin-top: 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="completion-card">
+            <div class="success-icon"></div>
+            <h1>チェックイン完了</h1>
+            
+            <div class="info-section">
+                <div class="info-row">
+                    <span class="info-label">予約時間</span>
+                    <span class="info-value" id="reservationTime"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">人数</span>
+                    <span class="info-value" id="reservationGuests"></span>
+                </div>
+            </div>
+
+            <a href="admin-checkin.html" class="btn">次のチェックインへ</a>
+            <p class="message">ご来場ありがとうございました！</p>
+        </div>
+    </div>
+
+    <script>
+        // URLパラメータから予約情報を取得
+        function getReservationInfo() {
+
+        }
+
+        // ページ読み込み時に予約情報を表示
+        window.onload = getReservationInfo;
+    </script>
+</body>
+</html> 

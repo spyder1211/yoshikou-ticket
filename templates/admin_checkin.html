@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}チェックイン - 海底二万マイル{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_checkin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="nav-back">
+    <a href="/admin" class="btn">
+        <span class="emoji">◀️</span> 管理画面に戻る
+    </a>
+</div>
+
+<div class="checkin-container">
+    <h1><span class="emoji">✅</span>チェックイン確認</h1>
+    
+    <div class="checkin-info">
+        <h3><span class="emoji">🎫</span>予約情報</h3>
+        <div class="info-item">
+            <span class="info-label">時間帯:</span>
+            <span class="info-value">{{ time }}</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">人数:</span>
+            <span class="info-value">{{ guests }}名</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">日付:</span>
+            <span class="info-value" id="current-date"></span>
+        </div>
+    </div>
+    
+    <div id="checkin-form">
+        <p>この予約でチェックインを行いますか？</p>
+        <div class="checkin-actions">
+            <button onclick="performCheckin()" class="btn btn-success">
+                <span class="emoji">✅</span> チェックイン実行
+            </button>
+            <a href="/admin" class="btn">
+                <span class="emoji">❌</span> キャンセル
+            </a>
+        </div>
+    </div>
+    
+    <div id="success-message" class="success-message hidden">
+        <h3><span class="emoji">🎉</span>チェックイン完了！</h3>
+        <p>{{ guests }}名のチェックインが完了しました。</p>
+        <div class="mt-20">
+            <a href="/admin" class="btn">
+                <span class="emoji">🏠</span> 管理画面に戻る
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// 現在の日付を表示
+document.getElementById('current-date').textContent = new Date().toLocaleDateString('ja-JP');
+
+async function performCheckin() {
+    const time = "{{ time }}";
+    const guests = {{ guests }};
+    
+    try {
+        const response = await fetch('/api/checkin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                time: time,
+                guests: guests
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // チェックイン成功
+            document.getElementById('checkin-form').classList.add('hidden');
+            document.getElementById('success-message').classList.remove('hidden');
+            
+            // 3秒後に管理画面に戻る
+            setTimeout(() => {
+                window.location.href = '/admin';
+            }, 3000);
+        } else {
+            alert('チェックインに失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('チェックイン中にエラーが発生しました');
+    }
+}
+</script>
+{% endblock %} 
