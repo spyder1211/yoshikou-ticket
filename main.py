@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 import json
 import os
 import qrcode
@@ -7,8 +7,10 @@ import base64
 from datetime import datetime
 import random
 import string
+import uuid
 
 app = Flask(__name__)
+app.secret_key = 'your-secret-key-change-this-in-production'  # セッション管理用
 
 # データファイルのパス
 TIMESLOTS_FILE = 'timeslots.json'
@@ -71,11 +73,19 @@ def generate_qr_code(text):
     img_str = base64.b64encode(img_buffer.getvalue()).decode()
     return f"data:image/png;base64,{img_str}"
 
+def get_session_id():
+    """セッションIDを取得または生成"""
+    if 'session_id' not in session:
+        session['session_id'] = str(uuid.uuid4())
+    return session['session_id']
+
 def get_active_reservation():
-    """アクティブな予約を取得"""
+    """このセッションのアクティブな予約を取得"""
+    session_id = get_session_id()
     reservations = load_reservations()
     for reservation in reversed(reservations):
-        if reservation.get('status') == 'active':
+        if (reservation.get('status') == 'active' and 
+            reservation.get('session_id') == session_id):
             return reservation
     return None
 
@@ -161,20 +171,23 @@ def api_reserve():
             else:
                 return jsonify({'success': False, 'message': '空きが不足しています'})
     
-    # 既存のアクティブな予約をキャンセル
+    # このセッションの既存のアクティブな予約をキャンセル
+    session_id = get_session_id()
     reservations = load_reservations()
     for reservation in reservations:
-        if reservation.get('status') == 'active':
+        if (reservation.get('status') == 'active' and 
+            reservation.get('session_id') == session_id):
             reservation['status'] = 'cancelled'
     
     # 新しい予約を追加
-    qr_code_text = f"QR-{time.replace(':', '').replace(' ', '').replace('-', '')}-{guests}"
+    qr_code_text = f"QR-{time.replace(':', '').replace(' ', '').replace('-', '')}-{guests}-{session_id[:8]}"
     reservation = {
         'time': time,
         'guests': guests,
         'date': datetime.now().strftime('%Y/%m/%d'),
         'status': 'active',
         'qr_code': qr_code_text,
+        'session_id': session_id,
         'created_at': datetime.now().isoformat()
     }
     reservations.append(reservation)
@@ -192,12 +205,14 @@ def api_reserve():
 @app.route('/api/cancel', methods=['POST'])
 def api_cancel():
     """予約キャンセルAPI"""
+    session_id = get_session_id()
     reservations = load_reservations()
     timeslots = load_timeslots()
     
-    # アクティブな予約を見つけてキャンセル
+    # このセッションのアクティブな予約を見つけてキャンセル
     for reservation in reversed(reservations):
-        if reservation.get('status') == 'active':
+        if (reservation.get('status') == 'active' and 
+            reservation.get('session_id') == session_id):
             reservation['status'] = 'cancelled'
             
             # 時間帯の空きを戻す
@@ -223,7 +238,7 @@ def api_checkin():
     
     reservations = load_reservations()
     
-    # 該当する予約を見つけてチェックイン
+    # 該当する予約を見つけてチェックイン（任意のセッションから）
     for reservation in reservations:
         if (reservation['time'] == time and 
             reservation['guests'] == guests and 

@@ -2,7 +2,7 @@
   {
     "time": "10:00 - 10:30",
     "total": 15,
-    "available": 14
+    "available": 5
   },
   {
     "time": "10:30 - 11:00",
@@ -47,6 +47,6 @@
   {
     "time": "14:30 - 15:00",
     "total": 14,
-    "available": 14
+    "available": 12
   }
 ]
