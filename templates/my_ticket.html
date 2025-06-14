@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}マイチケット - 海底二万マイル{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+.page-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.navigation-breadcrumb {
+    text-align: center;
+    margin: 20px 0;
+    color: #666;
+}
+
+.navigation-breadcrumb a {
+    color: #008793;
+    text-decoration: none;
+}
+
+.navigation-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.ticket-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.ticket {
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+    border: 2px solid #008793;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.ticket h2 {
+    color: #004d7a;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+}
+
+.qr-code {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 1px solid #ddd;
+}
+
+.qr-code img {
+    max-width: 200px;
+    height: auto;
+}
+
+.ticket-info {
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.ticket-info p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+.ticket-info strong {
+    color: #004d7a;
+}
+
+.instructions {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.instructions h3 {
+    color: #856404;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #008793;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #006b75;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    color: white;
+    text-decoration: none;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+@media (max-width: 768px) {
+    .ticket {
+        padding: 20px;
+        margin: 0 10px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><span class="emoji">🎫</span> マイチケット</h1>
+</div>
+
+<div class="navigation-breadcrumb">
+    <a href="{{ url_for('index') }}"><span class="emoji">🏠</span> ホーム</a> 
+    → <span class="emoji">🎫</span> マイチケット
+</div>
+
+<div class="ticket-container">
+    {% if active_reservation %}
+    <div class="ticket">
+        <h2>
+            <span class="emoji">🌊</span> 海底二万マイル整理券
+            <span class="status-badge status-active">有効</span>
+        </h2>
+        
+        <!-- QRコード -->
+        <div class="qr-code">
+            <img src="{{ active_reservation.qr_code_image }}" alt="QRコード" />
+        </div>
+        
+        <!-- 予約情報 -->
+        <div class="ticket-info">
+            <p><strong><span class="emoji">⏰</span> 予約時間:</strong> {{ active_reservation.time }}</p>
+            <p><strong><span class="emoji">👥</span> 人数:</strong> {{ active_reservation.guests }}名</p>
+            <p><strong><span class="emoji">📅</span> 予約日:</strong> {{ active_reservation.date }}</p>
+            <p><strong><span class="emoji">🔖</span> 整理券番号:</strong> {{ active_reservation.qr_code }}</p>
+        </div>
+        
+        <!-- 利用案内 -->
+        <div class="instructions">
+            <h3><span class="emoji">📋</span> ご利用案内</h3>
+            <p>⏰ <strong>指定時間の5分前</strong>までに受付にお越しください</p>
+            <p>📱 この画面またはQRコードをスタッフにお見せください</p>
+            <p>👥 ご予約いただいた人数でお越しください</p>
+        </div>
+        
+        <!-- アクションボタン -->
+        <div class="action-buttons">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <span class="emoji">🏠</span> ホームに戻る
+            </a>
+            
+           
+            
+            <button onclick="confirmCancel()" class="btn btn-danger">
+                <span class="emoji">❌</span> 予約をキャンセル
+            </button>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- キャンセル確認モーダル（簡易版） -->
+<div id="cancelModal" style="display: none;">
+    <!-- JavaScriptで制御 -->
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function confirmCancel() {
+    if (confirm('予約をキャンセルしますか？\n\nこの操作は取り消せません。')) {
+        cancelReservation();
+    }
+}
+
+async function cancelReservation() {
+    try {
+        const response = await fetch('/api/cancel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({})
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('予約がキャンセルされました。');
+            window.location.href = '{{ url_for("index") }}';
+        } else {
+            alert('キャンセルに失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('エラーが発生しました。もう一度お試しください。');
+    }
+}
+
+// 自動リフレッシュ（30秒ごと）- QRコードの有効性確認
+setInterval(function() {
+    // 必要に応じて実装
+}, 30000);
+</script>
+{% endblock %} 

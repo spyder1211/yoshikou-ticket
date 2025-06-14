@@ -91,7 +91,20 @@ def get_active_reservation():
 
 @app.route('/')
 def index():
-    """メイン予約画面"""
+    """トップページ（ウェルカム画面）"""
+    active_reservation = get_active_reservation()
+    
+    if active_reservation:
+        # QRコードを生成
+        qr_code_data = generate_qr_code(active_reservation['qr_code'])
+        active_reservation['qr_code_image'] = qr_code_data
+    
+    return render_template('welcome.html', 
+                         active_reservation=active_reservation)
+
+@app.route('/reserve')
+def reserve():
+    """予約画面（人数選択から開始）"""
     timeslots = load_timeslots()
     active_reservation = get_active_reservation()
     
@@ -102,6 +115,21 @@ def index():
     
     return render_template('index.html', 
                          timeslots=timeslots, 
+                         active_reservation=active_reservation)
+
+@app.route('/my-ticket')
+def my_ticket():
+    """整理券確認画面"""
+    active_reservation = get_active_reservation()
+    
+    if not active_reservation:
+        return redirect(url_for('index'))
+    
+    # QRコードを生成
+    qr_code_data = generate_qr_code(active_reservation['qr_code'])
+    active_reservation['qr_code_image'] = qr_code_data
+    
+    return render_template('my_ticket.html', 
                          active_reservation=active_reservation)
 
 @app.route('/admin')

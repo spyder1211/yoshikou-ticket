@@ -10,8 +10,11 @@
 <div class="admin-header">
     <h1><span class="emoji">⚙️</span>管理画面</h1>
     <div class="nav-links">
-        <a href="/" class="nav-link">
-            <span class="emoji">🏠</span>予約画面
+        <a href="{{ url_for('index') }}" class="nav-link">
+            <span class="emoji">🏠</span>ホーム
+        </a>
+        <a href="{{ url_for('reserve') }}" class="nav-link">
+            <span class="emoji">🎫</span>予約画面
         </a>
         <a href="/admin/checkin" class="nav-link">
             <span class="emoji">✅</span>チェックイン
