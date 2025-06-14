@@ -1,16 +1,37 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, make_response
 import json
 import os
 import qrcode
 import io
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 import string
 import uuid
+from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'  # セッション管理用
+
+# 管理者認証設定
+ADMIN_USERNAME = 'admin'
+ADMIN_PASSWORD = 'password123'
+
+def admin_required(f):
+    """管理者認証が必要なページのデコレータ"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # セッションまたはクッキーで認証状態を確認
+        is_authenticated = (
+            session.get('admin_authenticated') or 
+            request.cookies.get('admin_authenticated') == 'true'
+        )
+        
+        if not is_authenticated:
+            return redirect(url_for('admin_login'))
+        
+        return f(*args, **kwargs)
+    return decorated_function
 
 # データファイルのパス
 TIMESLOTS_FILE = 'timeslots.json'
@@ -132,7 +153,47 @@ def my_ticket():
     return render_template('my_ticket.html', 
                          active_reservation=active_reservation)
 
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    """管理者ログイン画面"""
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            # セッションに認証状態を保存
+            session['admin_authenticated'] = True
+            
+            # レスポンスを作成してクッキーを設定
+            response = make_response(redirect(url_for('admin')))
+            
+            # 24時間有効なクッキーを設定
+            expires = datetime.now() + timedelta(days=1)
+            response.set_cookie('admin_authenticated', 'true', 
+                              expires=expires, 
+                              httponly=True,
+                              secure=False)  # HTTPSを使用する場合はTrueに設定
+            
+            return response
+        else:
+            return render_template('admin_login.html', error='ユーザー名またはパスワードが間違っています')
+    
+    return render_template('admin_login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    """管理者ログアウト"""
+    # セッションから認証状態を削除
+    session.pop('admin_authenticated', None)
+    
+    # レスポンスを作成してクッキーを削除
+    response = make_response(redirect(url_for('admin_login')))
+    response.set_cookie('admin_authenticated', '', expires=0)
+    
+    return response
+
 @app.route('/admin')
+@admin_required
 def admin():
     """管理画面"""
     timeslots = load_timeslots()
@@ -163,6 +224,7 @@ def admin():
     return render_template('admin.html', timeslots=timeslots, stats=stats)
 
 @app.route('/admin/checkin')
+@admin_required
 def admin_checkin():
     """チェックイン画面"""
     time = request.args.get('time')
@@ -266,6 +328,7 @@ def api_cancel():
     return jsonify({'success': False, 'message': 'アクティブな予約が見つかりません'})
 
 @app.route('/api/checkin', methods=['POST'])
+@admin_required
 def api_checkin():
     """チェックインAPI"""
     data = request.json
@@ -288,6 +351,7 @@ def api_checkin():
     return jsonify({'success': False, 'message': '該当する予約が見つかりません'})
 
 @app.route('/api/update_capacity', methods=['POST'])
+@admin_required
 def api_update_capacity():
     """定員数更新API"""
     data = request.json

@@ -357,6 +357,17 @@
     color: white;
 }
 
+.nav-link.logout-link {
+    background: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.nav-link.logout-link:hover {
+    background: #c82333;
+    border-color: #bd2130;
+    color: white;
+}
+
 .section-title {
     display: flex;
     align-items: center;

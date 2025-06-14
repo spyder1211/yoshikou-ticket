@@ -8,16 +8,10 @@
 
 {% block content %}
 <div class="admin-header">
-    <h1><span class="emoji">⚙️</span>管理画面</h1>
+    <h1><span class="emoji">⚙️</span>2年5組クラス企画<br>管理画面</h1>
     <div class="nav-links">
-        <a href="{{ url_for('index') }}" class="nav-link">
-            <span class="emoji">🏠</span>ホーム
-        </a>
-        <a href="{{ url_for('reserve') }}" class="nav-link">
-            <span class="emoji">🎫</span>予約画面
-        </a>
-        <a href="/admin/checkin" class="nav-link">
-            <span class="emoji">✅</span>チェックイン
+        <a href="{{ url_for('admin_logout') }}" class="nav-link logout-link">
+            <span class="emoji">🚪</span>ログアウト
         </a>
     </div>
 </div>
@@ -32,10 +26,7 @@
         <div class="stat-value">{{ stats.total_checkins }}</div>
         <div class="stat-label"><span class="emoji">✅</span>総来場者数</div>
     </div>
-    <div class="stat-card">
-        <div class="stat-value">{{ stats.checkin_rate }}%</div>
-        <div class="stat-label"><span class="emoji">📈</span>来場率</div>
-    </div>
+    
     <div class="stat-card">
         <div class="stat-value">{{ stats.total_capacity }}</div>
         <div class="stat-label"><span class="emoji">🏠</span>総定員数</div>
@@ -77,11 +68,7 @@
             <button class="capacity-btn" onclick="changeCapacity({{ loop.index0 }}, 1)">+</button>
         </div>
         
-        <button class="checkin-btn" 
-                onclick="goToCheckin('{{ slot.time }}', {{ slot.reserved }})"
-                {{ 'disabled' if slot.reserved == 0 else '' }}>
-            チェックイン
-        </button>
+       
     </div>
     {% endfor %}
 </div>
