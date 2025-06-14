@@ -2,12 +2,12 @@
   {
     "time": "10:00 - 10:30",
     "total": 15,
-    "available": 5
+    "available": 0
   },
   {
     "time": "10:30 - 11:00",
     "total": 15,
-    "available": 9
+    "available": 15
   },
   {
     "time": "11:00 - 11:30",

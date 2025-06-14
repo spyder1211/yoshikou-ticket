@@ -288,10 +288,8 @@ async function confirmReservation() {
             const qrCodeDiv = document.getElementById('final-qr-code');
             qrCodeDiv.innerHTML = `<img src="${result.reservation.qr_code_image}" alt="QRコード">`;
             
-            // 数秒後にページをリロード
-            setTimeout(() => {
-                location.reload();
-            }, 3000);
+            // 即座にmy-ticketページにリダイレクト
+            window.location.href = `${window.location.origin}/my-ticket`;
         } else {
             alert('予約に失敗しました: ' + result.message);
         }

@@ -117,7 +117,7 @@ def index():
     
     if active_reservation:
         # QRコードを生成（チェックイン完了画面のURLを含める）
-        qr_url = f"http://localhost:8000/checkin-complete?qr={active_reservation['qr_code']}"
+        qr_url = f"{request.url_root}checkin-complete?qr={active_reservation['qr_code']}"
         qr_code_data = generate_qr_code(qr_url)
         active_reservation['qr_code_image'] = qr_code_data
     
@@ -132,7 +132,7 @@ def reserve():
     
     if active_reservation:
         # QRコードを生成（チェックイン完了画面のURLを含める）
-        qr_url = f"http://localhost:8000/checkin-complete?qr={active_reservation['qr_code']}"
+        qr_url = f"{request.url_root}checkin-complete?qr={active_reservation['qr_code']}"
         qr_code_data = generate_qr_code(qr_url)
         active_reservation['qr_code_image'] = qr_code_data
     
@@ -149,7 +149,7 @@ def my_ticket():
         return redirect(url_for('index'))
     
     # QRコードを生成（チェックイン完了画面のURLを含める）
-    qr_url = f"http://localhost:8000/checkin-complete?qr={active_reservation['qr_code']}"
+    qr_url = f"{request.url_root}checkin-complete?qr={active_reservation['qr_code']}"
     qr_code_data = generate_qr_code(qr_url)
     active_reservation['qr_code_image'] = qr_code_data
     
@@ -384,7 +384,7 @@ def api_reserve():
     save_reservations(reservations)
     
     # QRコードを生成（チェックイン完了画面のURLを含める）
-    qr_url = f"http://localhost:8000/checkin-complete?qr={qr_code_text}"
+    qr_url = f"{request.url_root}checkin-complete?qr={qr_code_text}"
     qr_code_image = generate_qr_code(qr_url)
     reservation['qr_code_image'] = qr_code_image
     
