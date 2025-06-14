@@ -37,24 +37,21 @@
     <div class="progress-step" id="progress-3">3</div>
 </div>
 
-<!-- ステップ1: 時間選択 -->
+<!-- ステップ1: 人数選択 -->
 <div id="step1" class="step active">
-    <h2><span class="emoji">⏰</span>時間帯を選択してください</h2>
-    <div class="time-slots">
-        {% for slot in timeslots %}
-        <div class="time-slot {{ 'disabled' if slot.available <= 0 else '' }}" 
-             onclick="selectTime('{{ slot.time }}', {{ slot.available }})"
-             data-time="{{ slot.time }}" data-available="{{ slot.available }}">
-            <div class="time-text">{{ slot.time }}</div>
-            <div class="availability">
-                {% if slot.available > 0 %}
-                    空き: {{ slot.available }}名
-                {% else %}
-                    満席
-                {% endif %}
-            </div>
-        </div>
-        {% endfor %}
+    <h2><span class="emoji">👥</span>人数を選択してください</h2>
+    <div class="guests-grid" id="guests-grid-step1">
+        <!-- 1-10名の選択肢を表示 -->
+        <div class="guest-btn" data-guests="1" onclick="selectGuests(1)">1名</div>
+        <div class="guest-btn" data-guests="2" onclick="selectGuests(2)">2名</div>
+        <div class="guest-btn" data-guests="3" onclick="selectGuests(3)">3名</div>
+        <div class="guest-btn" data-guests="4" onclick="selectGuests(4)">4名</div>
+        <div class="guest-btn" data-guests="5" onclick="selectGuests(5)">5名</div>
+        <div class="guest-btn" data-guests="6" onclick="selectGuests(6)">6名</div>
+        <div class="guest-btn" data-guests="7" onclick="selectGuests(7)">7名</div>
+        <div class="guest-btn" data-guests="8" onclick="selectGuests(8)">8名</div>
+        <div class="guest-btn" data-guests="9" onclick="selectGuests(9)">9名</div>
+        <div class="guest-btn" data-guests="10" onclick="selectGuests(10)">10名</div>
     </div>
     <div class="navigation">
         <div></div>
@@ -64,10 +61,13 @@
     </div>
 </div>
 
-<!-- ステップ2: 人数選択 -->
+<!-- ステップ2: 時間選択 -->
 <div id="step2" class="step">
-    <h2><span class="emoji">👥</span>人数を選択してください</h2>
-    <div class="guests-grid" id="guests-grid">
+    <h2><span class="emoji">⏰</span>時間帯を選択してください</h2>
+    <div class="selected-guests-info">
+        <p><span class="emoji">👥</span> 選択された人数: <span id="selected-guests-display">-</span>名</p>
+    </div>
+    <div class="time-slots" id="filtered-time-slots">
         <!-- JavaScriptで動的に生成 -->
     </div>
     <div class="navigation">
@@ -122,7 +122,19 @@
 <script>
 let selectedTime = null;
 let selectedGuests = null;
-let maxGuests = 0;
+let availableTimeslots = [];
+
+function selectGuests(guests) {
+    document.querySelectorAll('.guest-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    const btn = document.querySelector(`[data-guests="${guests}"]`);
+    btn.classList.add('selected');
+    
+    selectedGuests = guests;
+    document.getElementById('next-step1').disabled = false;
+}
 
 function selectTime(time, available) {
     if (available <= 0) return;
@@ -137,20 +149,7 @@ function selectTime(time, available) {
     slot.classList.add('selected');
     
     selectedTime = time;
-    maxGuests = available;
     
-    document.getElementById('next-step1').disabled = false;
-}
-
-function selectGuests(guests) {
-    document.querySelectorAll('.guest-btn').forEach(btn => {
-        btn.classList.remove('selected');
-    });
-    
-    const btn = document.querySelector(`[data-guests="${guests}"]`);
-    btn.classList.add('selected');
-    
-    selectedGuests = guests;
     document.getElementById('next-step2').disabled = false;
 }
 
@@ -164,8 +163,8 @@ function goToStep1() {
     document.getElementById('progress-1').classList.add('active');
 }
 
-function goToStep2() {
-    if (!selectedTime) return;
+async function goToStep2() {
+    if (!selectedGuests) return;
     
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     document.getElementById('step2').classList.add('active');
@@ -174,22 +173,43 @@ function goToStep2() {
     document.getElementById('progress-1').classList.remove('active');
     document.getElementById('progress-2').classList.add('active');
     
-    // 人数選択ボタンを生成
-    const guestsGrid = document.getElementById('guests-grid');
-    guestsGrid.innerHTML = '';
+    // 選択された人数を表示
+    document.getElementById('selected-guests-display').textContent = selectedGuests;
     
-    for (let i = 1; i <= Math.min(maxGuests, 10); i++) {
-        const btn = document.createElement('div');
-        btn.className = 'guest-btn';
-        btn.setAttribute('data-guests', i);
-        btn.textContent = `${i}名`;
-        btn.onclick = () => selectGuests(i);
-        guestsGrid.appendChild(btn);
+    // 人数に基づいて利用可能な時間帯を取得
+    try {
+        const response = await fetch(`/api/timeslots/${selectedGuests}`);
+        const data = await response.json();
+        availableTimeslots = data.timeslots;
+        
+        // 時間帯を表示
+        const timeSlots = document.getElementById('filtered-time-slots');
+        timeSlots.innerHTML = '';
+        
+        availableTimeslots.forEach(slot => {
+            const slotDiv = document.createElement('div');
+            slotDiv.className = `time-slot ${slot.available <= 0 ? 'disabled' : ''}`;
+            slotDiv.onclick = () => selectTime(slot.time, slot.available);
+            slotDiv.setAttribute('data-time', slot.time);
+            slotDiv.setAttribute('data-available', slot.available);
+            
+            slotDiv.innerHTML = `
+                <div class="time-text">${slot.time}</div>
+                <div class="availability">
+                    ${slot.available > 0 ? `空き: ${slot.available}名` : '満席'}
+                </div>
+            `;
+            
+            timeSlots.appendChild(slotDiv);
+        });
+    } catch (error) {
+        console.error('Error fetching timeslots:', error);
+        alert('時間帯の取得に失敗しました');
     }
 }
 
 function goToStep3() {
-    if (!selectedGuests) return;
+    if (!selectedTime || !selectedGuests) return;
     
     document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
     document.getElementById('step3').classList.add('active');

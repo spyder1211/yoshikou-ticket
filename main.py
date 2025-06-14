@@ -154,6 +154,14 @@ def completion():
     return render_template('completion.html', time=time, guests=guests)
 
 # API エンドポイント
+@app.route('/api/timeslots/<int:guests>')
+def api_timeslots_by_guests(guests):
+    """人数に基づいて利用可能な時間帯を取得するAPI"""
+    timeslots = load_timeslots()
+    # 指定された人数で予約可能な時間帯のみをフィルタリング
+    available_timeslots = [slot for slot in timeslots if slot['available'] >= guests]
+    return jsonify({'timeslots': available_timeslots})
+
 @app.route('/api/reserve', methods=['POST'])
 def api_reserve():
     """予約作成API"""
