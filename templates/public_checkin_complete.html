@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}チェックイン完了 - 海底二万マイル{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+.completion-container {
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+.completion-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 40px;
+    border-radius: 15px;
+    margin: 30px 0;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.completion-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.reservation-details {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    border: 2px solid #667eea;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+    font-size: 1.1em;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: bold;
+    color: #555;
+}
+
+.detail-value {
+    color: #333;
+    font-weight: bold;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.status-checked {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-active {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.home-button {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 30px;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.home-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+    color: white;
+}
+
+.instructions {
+    background: #e3f2fd;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.instructions h3 {
+    color: #004d7a;
+    margin-bottom: 15px;
+}
+
+.instructions p {
+    color: #333;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+    .completion-header {
+        padding: 25px;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+    }
+    
+    .completion-container {
+        padding: 10px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="completion-container">
+    <!-- 完了メッセージ -->
+    <div class="completion-header">
+        <div class="completion-icon">🎊</div>
+        {% if status == 'checked' %}
+            <h1>チェックイン完了！</h1>
+            <p>ご来場ありがとうございます<br>お疲れ様でした！</p>
+        {% else %}
+            <h1>予約確認完了！</h1>
+            <p>ご予約を確認いたしました<br>当日は整理券をお持ちください</p>
+        {% endif %}
+    </div>
+    
+    <!-- 予約詳細 -->
+    <div class="reservation-details">
+        <h3><span class="emoji">📋</span> ご予約詳細</h3>
+        
+        <div class="detail-row">
+            <span class="detail-label"><span class="emoji">⏰</span> 予約時間:</span>
+            <span class="detail-value">{{ time }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label"><span class="emoji">👥</span> 人数:</span>
+            <span class="detail-value">{{ guests }}名</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label"><span class="emoji">🔖</span> 整理券番号:</span>
+            <span class="detail-value">{{ qr_code }}</span>
+        </div>
+        
+        <div class="detail-row">
+            <span class="detail-label"><span class="emoji">📱</span> ステータス:</span>
+            <span class="detail-value">
+                {% if status == 'checked' %}
+                    <span class="status-badge status-checked">✅ チェックイン済み</span>
+                {% else %}
+                    <span class="status-badge status-active">⏳ 予約済み</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    
+    <!-- 案内メッセージ -->
+    {% if status == 'checked' %}
+        <div class="instructions">
+            <h3><span class="emoji">🎉</span> ありがとうございました！</h3>
+            <p>本日は2-5クラス企画「海底二万マイル」にご参加いただき、ありがとうございました。</p>
+            <p>楽しんでいただけましたでしょうか？またのご来場をお待ちしております！</p>
+        </div>
+    {% else %}
+        <div class="instructions">
+            <h3><span class="emoji">📝</span> ご来場時のお願い</h3>
+            <p>当日は予約時間の <strong>5分前</strong> までに会場へお越しください。</p>
+            <p>この画面またはQRコードを受付でご提示ください。</p>
+            <p>ご不明な点がございましたら、スタッフまでお声がけください。</p>
+        </div>
+    {% endif %}
+    
+    <!-- ホームボタン -->
+    <a href="{{ url_for('index') }}" class="home-button">
+        <span class="emoji">🏠</span> ホームに戻る
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+// ページロード時のメッセージ
+document.addEventListener('DOMContentLoaded', function() {
+    // 少し遅らせてウェルカムメッセージを表示（オプション）
+    setTimeout(() => {
+        console.log('チェックイン完了画面が表示されました');
+    }, 500);
+});
+</script>
+{% endblock %} 

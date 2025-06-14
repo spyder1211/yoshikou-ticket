@@ -116,8 +116,9 @@ def index():
     active_reservation = get_active_reservation()
     
     if active_reservation:
-        # QRコードを生成
-        qr_code_data = generate_qr_code(active_reservation['qr_code'])
+        # QRコードを生成（チェックイン完了画面のURLを含める）
+        qr_url = f"http://localhost:8000/checkin-complete?qr={active_reservation['qr_code']}"
+        qr_code_data = generate_qr_code(qr_url)
         active_reservation['qr_code_image'] = qr_code_data
     
     return render_template('welcome.html', 
@@ -130,8 +131,9 @@ def reserve():
     active_reservation = get_active_reservation()
     
     if active_reservation:
-        # QRコードを生成
-        qr_code_data = generate_qr_code(active_reservation['qr_code'])
+        # QRコードを生成（チェックイン完了画面のURLを含める）
+        qr_url = f"http://localhost:8000/checkin-complete?qr={active_reservation['qr_code']}"
+        qr_code_data = generate_qr_code(qr_url)
         active_reservation['qr_code_image'] = qr_code_data
     
     return render_template('index.html', 
@@ -146,8 +148,9 @@ def my_ticket():
     if not active_reservation:
         return redirect(url_for('index'))
     
-    # QRコードを生成
-    qr_code_data = generate_qr_code(active_reservation['qr_code'])
+    # QRコードを生成（チェックイン完了画面のURLを含める）
+    qr_url = f"http://localhost:8000/checkin-complete?qr={active_reservation['qr_code']}"
+    qr_code_data = generate_qr_code(qr_url)
     active_reservation['qr_code_image'] = qr_code_data
     
     return render_template('my_ticket.html', 
@@ -227,13 +230,99 @@ def admin():
 @admin_required
 def admin_checkin():
     """チェックイン画面"""
-    time = request.args.get('time')
-    guests = request.args.get('guests')
+    timeslots = load_timeslots()
+    reservations = load_reservations()
     
-    if not time or not guests:
-        return redirect(url_for('admin'))
+    # 各時間帯の予約リストを作成
+    for slot in timeslots:
+        slot['reservations'] = [r for r in reservations 
+                              if r['time'] == slot['time'] and r['status'] == 'active']
     
-    return render_template('admin_checkin.html', time=time, guests=guests)
+    return render_template('admin_checkin.html', timeslots=timeslots)
+
+@app.route('/admin/qr-checkin')
+@admin_required
+def qr_checkin_page():
+    """QRコード読み込みページ"""
+    return render_template('qr_checkin.html')
+
+@app.route('/api/qr-checkin', methods=['POST'])
+@admin_required
+def api_qr_checkin():
+    """QRコードによるチェックインAPI"""
+    data = request.json
+    qr_code = data.get('qr_code', '').strip()
+    
+    if not qr_code:
+        return jsonify({'success': False, 'message': 'QRコードが読み取れませんでした'})
+    
+    reservations = load_reservations()
+    
+    # QRコードに該当する予約を検索
+    for reservation in reservations:
+        if (reservation.get('qr_code') == qr_code and 
+            reservation.get('status') == 'active'):
+            
+            # チェックイン処理
+            reservation['status'] = 'checked'
+            reservation['checked_at'] = datetime.now().isoformat()
+            
+            save_reservations(reservations)
+            
+            return jsonify({
+                'success': True,
+                'reservation': {
+                    'time': reservation['time'],
+                    'guests': reservation['guests'],
+                    'date': reservation['date'],
+                    'qr_code': reservation['qr_code']
+                }
+            })
+    
+    return jsonify({'success': False, 'message': '有効な予約が見つかりませんでした'})
+
+@app.route('/admin/checkin-success')
+@admin_required
+def checkin_success():
+    """チェックイン完了画面"""
+    time = request.args.get('time', '')
+    guests = request.args.get('guests', '')
+    qr_code = request.args.get('qr_code', '')
+    
+    return render_template('checkin_success.html', 
+                         time=time, guests=guests, qr_code=qr_code)
+
+@app.route('/checkin-complete')
+def public_checkin_complete():
+    """一般向けチェックイン完了画面（QRコードからのアクセス）"""
+    qr_code = request.args.get('qr', '')
+    
+    if not qr_code:
+        return redirect(url_for('index'))
+    
+    # QRコードから予約情報を取得
+    reservations = load_reservations()
+    reservation = None
+    
+    for r in reservations:
+        if r.get('qr_code') == qr_code:
+            reservation = r
+            break
+    
+    if not reservation:
+        return redirect(url_for('index'))
+    
+    # チェックイン済みでない場合は、チェックイン処理を実行
+    if reservation.get('status') == 'active':
+        reservation['status'] = 'checked'
+        reservation['checked_at'] = datetime.now().isoformat()
+        save_reservations(reservations)
+    
+    return render_template('public_checkin_complete.html', 
+                         time=reservation['time'], 
+                         guests=reservation['guests'], 
+                         qr_code=reservation['qr_code'],
+                         status=reservation['status'])
 
 @app.route('/completion')
 def completion():
@@ -294,8 +383,9 @@ def api_reserve():
     save_timeslots(timeslots)
     save_reservations(reservations)
     
-    # QRコードを生成
-    qr_code_image = generate_qr_code(qr_code_text)
+    # QRコードを生成（チェックイン完了画面のURLを含める）
+    qr_url = f"http://localhost:8000/checkin-complete?qr={qr_code_text}"
+    qr_code_image = generate_qr_code(qr_url)
     reservation['qr_code_image'] = qr_code_image
     
     return jsonify({'success': True, 'reservation': reservation})
