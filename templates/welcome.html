@@ -251,19 +251,9 @@
 
 <!-- メインアクション -->
 <div class="action-section">
-    {% if active_reservation %}
-    <a href="{{ url_for('my_ticket') }}" class="main-cta">
-        冒険を始める
-    </a>
-    {% else %}
+    {% if not active_reservation %}
     <a href="{{ url_for('reserve') }}" class="main-cta">
         冒険を始める
-    </a>
-    {% endif %}
-    
-    {% if active_reservation %}
-    <a href="{{ url_for('my_ticket') }}" class="secondary-cta">
-        マイチケット
     </a>
     {% endif %}
 </div>

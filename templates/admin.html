@@ -73,6 +73,50 @@
     </div>
     {% endfor %}
 </div>
+
+<!-- データ管理セクション -->
+<div class="data-management-section" style="margin-top: 40px; padding: 20px; background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px;">
+    <h2 class="section-title" style="color: #856404;">
+        データ管理（危険な操作）
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+        <!-- 予約データ初期化 -->
+        <div style="padding: 20px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px;">
+            <h3 style="color: #721c24; margin-bottom: 10px;">予約データ初期化</h3>
+            <p style="font-size: 0.9em; color: #721c24; margin-bottom: 15px;">
+                全ての予約データ（reservations.json）を削除します。<br>
+                <strong>この操作は取り消しできません！</strong>
+            </p>
+            <button onclick="resetReservations()" class="btn" style="background: #dc3545; color: white; width: 100%;">
+                予約データを初期化
+            </button>
+        </div>
+        
+        <!-- 時間帯データ初期化 -->
+        <div style="padding: 20px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px;">
+            <h3 style="color: #721c24; margin-bottom: 10px;">時間帯データ初期化</h3>
+            <p style="font-size: 0.9em; color: #721c24; margin-bottom: 15px;">
+                時間帯設定（timeslots.json）を初期値にリセットします。<br>
+                <strong>この操作は取り消しできません！</strong>
+            </p>
+            <button onclick="resetTimeslots()" class="btn" style="background: #dc3545; color: white; width: 100%;">
+                時間帯データを初期化
+            </button>
+        </div>
+    </div>
+    
+    <!-- 全データ初期化 -->
+    <div style="margin-top: 20px; padding: 20px; background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 8px;">
+        <h3 style="color: #0c5460; margin-bottom: 10px;">全データ初期化</h3>
+        <p style="font-size: 0.9em; color: #0c5460; margin-bottom: 15px;">
+            予約データと時間帯データの両方を同時に初期化します。完全にシステムをリセットしたい場合に使用してください。
+        </p>
+        <button onclick="resetAllData()" class="btn" style="background: #17a2b8; color: white; width: 100%;">
+            全データを初期化
+        </button>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
@@ -121,6 +165,100 @@ function goToCheckin(time, guests) {
     
     const url = `/admin/checkin?time=${encodeURIComponent(time)}&guests=${guests}`;
     window.location.href = url;
+}
+
+// データ初期化関数
+async function resetReservations() {
+    if (!confirm('予約データを初期化しますか？\n\n⚠️ この操作により、全ての予約データが削除されます。\n⚠️ この操作は取り消しできません。\n\n本当に実行しますか？')) {
+        return;
+    }
+    
+    if (!confirm('最終確認です。\n\n予約データ（reservations.json）を完全に削除します。\n\n実行しますか？')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/reset_reservations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('予約データの初期化が完了しました。');
+            location.reload();
+        } else {
+            alert('予約データの初期化に失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('予約データの初期化中にエラーが発生しました');
+    }
+}
+
+async function resetTimeslots() {
+    if (!confirm('時間帯データを初期化しますか？\n\n⚠️ この操作により、現在の時間帯設定が初期値にリセットされます。\n⚠️ この操作は取り消しできません。\n\n本当に実行しますか？')) {
+        return;
+    }
+    
+    if (!confirm('最終確認です。\n\n時間帯データ（timeslots.json）を初期値にリセットします。\n\n実行しますか？')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/reset_timeslots', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('時間帯データの初期化が完了しました。');
+            location.reload();
+        } else {
+            alert('時間帯データの初期化に失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('時間帯データの初期化中にエラーが発生しました');
+    }
+}
+
+async function resetAllData() {
+    if (!confirm('全データを初期化しますか？\n\n⚠️ この操作により、以下のデータが削除/リセットされます：\n  • 全ての予約データ\n  • 時間帯設定\n\n⚠️ この操作は取り消しできません。\n\n本当に実行しますか？')) {
+        return;
+    }
+    
+    if (!confirm('最終確認です。\n\n予約データと時間帯データの両方を初期化します。\nシステムが完全にリセットされます。\n\n実行しますか？')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/reset_all_data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('全データの初期化が完了しました。');
+            location.reload();
+        } else {
+            alert('全データの初期化に失敗しました: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('全データの初期化中にエラーが発生しました');
+    }
 }
 
 // 10秒ごとに統計を更新

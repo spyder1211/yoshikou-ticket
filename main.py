@@ -462,5 +462,50 @@ def api_update_capacity():
     
     return jsonify({'success': False, 'message': '無効なインデックスです'})
 
+@app.route('/api/reset_reservations', methods=['POST'])
+@admin_required
+def api_reset_reservations():
+    """予約データ初期化API"""
+    try:
+        # 予約データを空の配列で初期化
+        save_reservations([])
+        
+        # 時間帯の利用可能数をリセット
+        timeslots = load_timeslots()
+        for slot in timeslots:
+            slot['available'] = slot['total']
+        save_timeslots(timeslots)
+        
+        return jsonify({'success': True, 'message': '予約データを初期化しました'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'初期化に失敗しました: {str(e)}'})
+
+@app.route('/api/reset_timeslots', methods=['POST'])
+@admin_required
+def api_reset_timeslots():
+    """時間帯データ初期化API"""
+    try:
+        # 時間帯データをデフォルト値で初期化
+        save_timeslots(DEFAULT_TIMESLOTS.copy())
+        
+        return jsonify({'success': True, 'message': '時間帯データを初期化しました'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'初期化に失敗しました: {str(e)}'})
+
+@app.route('/api/reset_all_data', methods=['POST'])
+@admin_required
+def api_reset_all_data():
+    """全データ初期化API"""
+    try:
+        # 予約データを空の配列で初期化
+        save_reservations([])
+        
+        # 時間帯データをデフォルト値で初期化
+        save_timeslots(DEFAULT_TIMESLOTS.copy())
+        
+        return jsonify({'success': True, 'message': '全データを初期化しました'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'初期化に失敗しました: {str(e)}'})
+
 if __name__ == '__main__':
     app.run(debug=True, port=8000) 
