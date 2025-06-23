@@ -162,30 +162,30 @@
     
     <!-- 予約詳細 -->
     <div class="reservation-details">
-        <h3><span class="emoji">📋</span> ご予約詳細</h3>
+        <h3>ご予約詳細</h3>
         
         <div class="detail-row">
-            <span class="detail-label"><span class="emoji">⏰</span> 予約時間:</span>
+            <span class="detail-label">予約時間:</span>
             <span class="detail-value">{{ time }}</span>
         </div>
         
         <div class="detail-row">
-            <span class="detail-label"><span class="emoji">👥</span> 人数:</span>
+            <span class="detail-label">人数:</span>
             <span class="detail-value">{{ guests }}名</span>
         </div>
         
         <div class="detail-row">
-            <span class="detail-label"><span class="emoji">🔖</span> 整理券番号:</span>
+            <span class="detail-label">整理券番号:</span>
             <span class="detail-value">{{ qr_code }}</span>
         </div>
         
         <div class="detail-row">
-            <span class="detail-label"><span class="emoji">📱</span> ステータス:</span>
+            <span class="detail-label">ステータス:</span>
             <span class="detail-value">
                 {% if status == 'checked' %}
-                    <span class="status-badge status-checked">✅ チェックイン済み</span>
+                    <span class="status-badge status-checked">チェックイン済み</span>
                 {% else %}
-                    <span class="status-badge status-active">⏳ 予約済み</span>
+                    <span class="status-badge status-active">予約済み</span>
                 {% endif %}
             </span>
         </div>
@@ -194,13 +194,13 @@
     <!-- 案内メッセージ -->
     {% if status == 'checked' %}
         <div class="instructions">
-            <h3><span class="emoji">🎉</span> ありがとうございました！</h3>
+            <h3>ありがとうございました！</h3>
             <p>本日は2-5クラス企画「海底二万マイル」にご参加いただき、ありがとうございました。</p>
             <p>楽しんでいただけましたでしょうか？またのご来場をお待ちしております！</p>
         </div>
     {% else %}
         <div class="instructions">
-            <h3><span class="emoji">📝</span> ご来場時のお願い</h3>
+            <h3>ご来場時のお願い</h3>
             <p>当日は予約時間の <strong>5分前</strong> までに会場へお越しください。</p>
             <p>この画面またはQRコードを受付でご提示ください。</p>
             <p>ご不明な点がございましたら、スタッフまでお声がけください。</p>
@@ -209,7 +209,7 @@
     
     <!-- ホームボタン -->
     <a href="{{ url_for('index') }}" class="home-button">
-        <span class="emoji">🏠</span> ホームに戻る
+        ホームに戻る
     </a>
 </div>
 {% endblock %}

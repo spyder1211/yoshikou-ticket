@@ -425,12 +425,12 @@
             <!-- チケット情報 -->
             <div class="ticket-info-section">
                 <div class="info-row">
-                    <span class="info-label"><span class="emoji">👥</span> 人数</span>
+                    <span class="info-label">人数</span>
                     <span class="info-value">{{ active_reservation.guests }}名</span>
                 </div>
                <!-- 時間 -->
                <div class="info-row">
-                <span class="info-label"><span class="emoji">🕒</span> 時間</span>
+                <span class="info-label">時間</span>
                 <span class="info-value">{{ active_reservation.time }}</span>
                </div>
                
@@ -438,7 +438,7 @@
             
             <!-- 利用案内 -->
             <div class="instructions-section">
-                <h4><span class="emoji">📋</span> ご利用案内</h4>
+                <h4>ご利用案内</h4>
                 <div> 指定時間のできるだけ早めに受付にお越しください</div>
                 <div> この画面またはQRコードをスタッフにお見せください</div>
                 <div> ご予約いただいた人数でお越しください</div>
@@ -450,20 +450,20 @@
         <!-- アクションボタン -->
         <div class="action-buttons">
             <a href="{{ url_for('index') }}" class="btn btn-primary">
-                <span class="emoji">🏠</span> ホームに戻る
+                ホームに戻る
             </a>
             
             <button onclick="confirmCancel()" class="btn btn-danger">
-                <span class="emoji">❌</span> 予約をキャンセル
+                予約をキャンセル
             </button>
         </div>
         
         {% else %}
         <div style="text-align: center; color: white; padding: 40px 20px;">
-            <h2><span class="emoji">😞</span> 有効な予約がありません</h2>
+            <h2>有効な予約がありません</h2>
             <p style="margin: 20px 0; opacity: 0.8;">現在、有効な整理券がございません。</p>
             <a href="{{ url_for('index') }}" class="btn btn-primary">
-                <span class="emoji">🎫</span> 新しい予約をする
+                新しい予約をする
             </a>
         </div>
         {% endif %}

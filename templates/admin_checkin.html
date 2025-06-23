@@ -9,18 +9,18 @@
 {% block content %}
 <div class="nav-back">
     <a href="/admin" class="btn">
-        <span class="emoji">◀️</span> 管理画面に戻る
+        管理画面に戻る
     </a>
     <a href="{{ url_for('admin_logout') }}" class="btn btn-danger" style="margin-left: 10px;">
-        <span class="emoji">🚪</span> ログアウト
+        ログアウト
     </a>
 </div>
 
 <div class="checkin-container">
-    <h1><span class="emoji">✅</span>チェックイン確認</h1>
+    <h1>チェックイン確認</h1>
     
     <div class="checkin-info">
-        <h3><span class="emoji">🎫</span>予約情報</h3>
+        <h3>予約情報</h3>
         <div class="info-item">
             <span class="info-label">時間帯:</span>
             <span class="info-value">{{ time }}</span>
@@ -39,20 +39,20 @@
         <p>この予約でチェックインを行いますか？</p>
         <div class="checkin-actions">
             <button onclick="performCheckin()" class="btn btn-success">
-                <span class="emoji">✅</span> チェックイン実行
+                チェックイン実行
             </button>
             <a href="/admin" class="btn">
-                <span class="emoji">❌</span> キャンセル
+                キャンセル
             </a>
         </div>
     </div>
     
     <div id="success-message" class="success-message hidden">
-        <h3><span class="emoji">🎉</span>チェックイン完了！</h3>
+        <h3>チェックイン完了！</h3>
         <p>{{ guests }}名のチェックインが完了しました。</p>
         <div class="mt-20">
             <a href="/admin" class="btn">
-                <span class="emoji">🏠</span> 管理画面に戻る
+                管理画面に戻る
             </a>
         </div>
     </div>

@@ -9,16 +9,16 @@
 {% block content %}
 <!-- ナビゲーション breadcrumb -->
 <div style="text-align: center; margin: 20px 0; color: #666;">
-    <a href="{{ url_for('index') }}" style="color: #008793; text-decoration: none;"><span class="emoji">🏠</span> ホーム</a> 
-    → <span class="emoji">🎫</span> 予約
+    <a href="{{ url_for('index') }}" style="color: #008793; text-decoration: none;">ホーム</a> 
+    → 予約
 </div>
 
-<h1><span class="emoji">🌊</span>海底二万マイル 整理券予約システム</h1>
+<h1>海底二万マイル 整理券予約システム</h1>
 
 {% if active_reservation %}
 <!-- 既存の予約がある場合の表示 -->
 <div class="ticket">
-    <h2><span class="emoji">🎫</span>あなたの整理券</h2>
+    <h2>あなたの整理券</h2>
     <div class="qr-code">
         <img src="{{ active_reservation.qr_code_image }}" alt="QRコード">
     </div>
@@ -30,11 +30,11 @@
     <p>この画面をスタッフにお見せください</p>
     <div class="mt-20" style="text-align: center;">
         <a href="{{ url_for('index') }}" class="btn" style="background: #008793; color: white; margin: 5px;">
-            <span class="emoji">🏠</span> ホームに戻る
+            ホーム ホームに戻る
         </a>
         
         <button onclick="cancelReservation()" class="btn btn-danger" style="margin: 5px;">
-            <span class="emoji">❌</span>予約をキャンセル
+            予約をキャンセル
         </button>
     </div>
 </div>
@@ -43,7 +43,7 @@
 <!-- 新規予約フォーム -->
 <div class="progress-bar">
     <div class="progress-step completed" id="progress-0">
-        <span class="emoji">🏠</span>
+        ホーム
     </div>
     <div class="progress-step active" id="progress-1">1</div>
     <div class="progress-step" id="progress-2">2</div>
@@ -52,7 +52,7 @@
 
 <!-- 進捗説明 -->
 <div style="text-align: center; margin: 15px 0; color: #666; font-size: 0.9rem;">
-    <span class="emoji">🏠</span> ホーム → 
+    ホーム → 
     <span style="font-weight: bold; color: #008793;">1. 人数選択</span> → 
     2. 時間選択 → 
     3. 確認・予約
@@ -60,7 +60,7 @@
 
 <!-- ステップ1: 人数選択 -->
 <div id="step1" class="step active">
-    <h2><span class="emoji">👥</span>人数を選択してください</h2>
+    <h2>人数を選択してください</h2>
     <div class="guests-grid" id="guests-grid-step1">
         <!-- 1-10名の選択肢を表示 -->
         <div class="guest-btn" data-guests="1" onclick="selectGuests(1)">1名</div>
@@ -76,36 +76,36 @@
     </div>
     <div class="navigation">
         <a href="{{ url_for('index') }}" class="btn">
-            <span class="emoji">🏠</span> ホームに戻る
+            ホーム ホームに戻る
         </a>
         <button onclick="goToStep2()" class="btn" id="next-step1" disabled>
-            次へ <span class="emoji">▶️</span>
+            次へ
         </button>
     </div>
 </div>
 
 <!-- ステップ2: 時間選択 -->
 <div id="step2" class="step">
-    <h2><span class="emoji">⏰</span>時間帯を選択してください</h2>
+    <h2>時間帯を選択してください</h2>
     <div class="selected-guests-info">
-        <p><span class="emoji">👥</span> 選択された人数: <span id="selected-guests-display">-</span>名</p>
+        <p>選択された人数: <span id="selected-guests-display">-</span>名</p>
     </div>
     <div class="time-slots" id="filtered-time-slots">
         <!-- JavaScriptで動的に生成 -->
     </div>
     <div class="navigation">
         <button onclick="goToStep1()" class="btn">
-            <span class="emoji">◀️</span> 戻る
+            戻る
         </button>
         <button onclick="goToStep3()" class="btn" id="next-step2" disabled>
-            次へ <span class="emoji">▶️</span>
+            次へ
         </button>
     </div>
 </div>
 
 <!-- ステップ3: 確認・予約 -->
 <div id="step3" class="step">
-    <h2><span class="emoji">✅</span>予約内容を確認してください</h2>
+    <h2>予約内容を確認してください</h2>
     <div class="ticket-info">
         <p><strong>予約時間:</strong> <span id="confirm-time"></span></p>
         <p><strong>人数:</strong> <span id="confirm-guests"></span>名</p>
@@ -113,19 +113,19 @@
     </div>
     <div class="navigation">
         <button onclick="goToStep2()" class="btn">
-            <span class="emoji">◀️</span> 戻る
+            戻る
         </button>
         <button onclick="confirmReservation()" class="btn btn-success">
-            <span class="emoji">🎫</span> 予約を確定する
+            予約を確定する
         </button>
     </div>
 </div>
 
 <!-- 予約完了 -->
 <div id="step4" class="step">
-    <h2><span class="emoji">🎉</span>予約が完了しました！</h2>
+    <h2>予約が完了しました！</h2>
     <div class="ticket">
-        <h3><span class="emoji">🎫</span>あなたの整理券</h3>
+        <h3>あなたの整理券</h3>
         <div class="qr-code" id="final-qr-code">
             <!-- QRコードがここに表示されます -->
         </div>
@@ -139,10 +139,10 @@
         <!-- 完了後のアクション -->
         <div style="margin-top: 30px; text-align: center;">
             <a href="{{ url_for('index') }}" class="btn" style="background: #008793; color: white; margin: 5px;">
-                <span class="emoji">🏠</span> ホームに戻る
+                ホームに戻る
             </a>
             <a href="{{ url_for('my_ticket') }}" class="btn" style="background: #6c757d; color: white; margin: 5px;">
-                <span class="emoji">🎫</span> チケットを確認
+                チケットを確認
             </a>
         </div>
     </div>

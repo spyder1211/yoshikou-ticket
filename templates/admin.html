@@ -8,11 +8,11 @@
 
 {% block content %}
 <div class="admin-header">
-    <h1><span class="emoji">⚙️</span>2-5クラス企画<br>管理画面</h1>
+    <h1>2-5クラス企画<br>管理画面</h1>
     <div class="nav-links">
         
         <a href="{{ url_for('admin_logout') }}" class="nav-link" style="background: #dc3545;">
-            <span class="emoji">🚪</span>ログアウト
+            ログアウト
         </a>
     </div>
 </div>
@@ -21,23 +21,23 @@
 <div class="stats-overview">
     <div class="stat-card">
         <div class="stat-value">{{ stats.total_reservations }}</div>
-        <div class="stat-label"><span class="emoji">📝</span>総予約者数</div>
+        <div class="stat-label">総予約者数</div>
     </div>
     <div class="stat-card">
         <div class="stat-value">{{ stats.total_checkins }}</div>
-        <div class="stat-label"><span class="emoji">✅</span>総来場者数</div>
+        <div class="stat-label">総来場者数</div>
     </div>
     
     <div class="stat-card">
         <div class="stat-value">{{ stats.total_capacity }}</div>
-        <div class="stat-label"><span class="emoji">🏠</span>総定員数</div>
+        <div class="stat-label">総定員数</div>
     </div>
 </div>
 
 <!-- 時間帯管理 -->
 <div class="time-slots-section">
     <h2 class="section-title">
-        <span class="emoji">⏰</span>時間帯別状況
+        時間帯別状況
     </h2>
     
     {% for slot in timeslots %}

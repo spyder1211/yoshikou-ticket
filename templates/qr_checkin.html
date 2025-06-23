@@ -125,16 +125,16 @@
 {% block content %}
 <div class="nav-back">
     <a href="/admin" class="btn">
-        <span class="emoji">◀️</span> 管理画面に戻る
+        管理画面に戻る
     </a>
 </div>
 
 <div class="qr-scanner-container">
-    <h1><span class="emoji">📱</span>QRコードチェックイン</h1>
+    <h1>QRコードチェックイン</h1>
     
     <!-- 使用方法の説明 -->
     <div class="instructions">
-        <h3><span class="emoji">📋</span> 使用方法</h3>
+        <h3>使用方法</h3>
         <ol>
             <li>お客様が提示するQRコードをスマートフォンで読み取るか、手動で入力してください</li>
             <li>「チェックイン実行」ボタンを押してください</li>
@@ -144,7 +144,7 @@
     
     <!-- 手動入力セクション -->
     <div class="manual-input-section">
-        <h3><span class="emoji">⌨️</span> QRコード手動入力</h3>
+        <h3>QRコード手動入力</h3>
         <p>QRコードをスキャンまたは手動で入力してください</p>
         
         <input type="text" 
@@ -154,11 +154,11 @@
                autocomplete="off">
         
         <button onclick="processQRCode()" class="scan-btn">
-            <span class="emoji">✅</span> チェックイン実行
+            チェックイン実行
         </button>
         
         <button onclick="clearInput()" class="btn" style="margin-left: 10px;">
-            <span class="emoji">🗑️</span> クリア
+            クリア
         </button>
     </div>
     
@@ -167,7 +167,7 @@
     
     <!-- カメラスキャン機能（将来の拡張用） -->
     <div class="scanner-section" style="display: none;">
-        <h3><span class="emoji">📷</span> カメラでスキャン</h3>
+        <h3>カメラでスキャン</h3>
         <p>将来のバージョンで対応予定</p>
         <div id="camera-scanner">
             <!-- カメラスキャン機能は将来実装 -->
