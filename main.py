@@ -36,6 +36,7 @@ def admin_required(f):
 # データファイルのパス
 TIMESLOTS_FILE = 'timeslots.json'
 RESERVATIONS_FILE = 'reservations.json'
+INITIAL_CAPACITIES_FILE = 'initial_capacities.json'
 
 # 初期時間帯データ
 DEFAULT_TIMESLOTS = [
@@ -76,6 +77,34 @@ def save_reservations(reservations):
     """予約データを保存"""
     with open(RESERVATIONS_FILE, 'w', encoding='utf-8') as f:
         json.dump(reservations, f, ensure_ascii=False, indent=2)
+
+def load_initial_capacities():
+    """初期定員設定を読み込み"""
+    if os.path.exists(INITIAL_CAPACITIES_FILE):
+        try:
+            with open(INITIAL_CAPACITIES_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            pass
+    # デフォルト値を返す
+    return [15] * len(DEFAULT_TIMESLOTS)
+
+def save_initial_capacities(capacities):
+    """初期定員設定を保存"""
+    with open(INITIAL_CAPACITIES_FILE, 'w', encoding='utf-8') as f:
+        json.dump(capacities, f, ensure_ascii=False, indent=2)
+
+def create_default_timeslots_with_capacities(capacities):
+    """指定された定員で初期時間帯データを作成"""
+    timeslots = []
+    for i, slot_template in enumerate(DEFAULT_TIMESLOTS):
+        capacity = capacities[i] if i < len(capacities) else 15
+        timeslots.append({
+            "time": slot_template["time"],
+            "total": capacity,
+            "available": capacity
+        })
+    return timeslots
 
 def generate_qr_code(text):
     """QRコードを生成してBase64エンコードした文字列を返す"""
@@ -485,8 +514,10 @@ def api_reset_reservations():
 def api_reset_timeslots():
     """時間帯データ初期化API"""
     try:
-        # 時間帯データをデフォルト値で初期化
-        save_timeslots(DEFAULT_TIMESLOTS.copy())
+        # 保存された初期定員設定を使用
+        initial_capacities = load_initial_capacities()
+        timeslots = create_default_timeslots_with_capacities(initial_capacities)
+        save_timeslots(timeslots)
         
         return jsonify({'success': True, 'message': '時間帯データを初期化しました'})
     except Exception as e:
@@ -500,12 +531,65 @@ def api_reset_all_data():
         # 予約データを空の配列で初期化
         save_reservations([])
         
-        # 時間帯データをデフォルト値で初期化
-        save_timeslots(DEFAULT_TIMESLOTS.copy())
+        # 保存された初期定員設定を使用して時間帯データを初期化
+        initial_capacities = load_initial_capacities()
+        timeslots = create_default_timeslots_with_capacities(initial_capacities)
+        save_timeslots(timeslots)
         
         return jsonify({'success': True, 'message': '全データを初期化しました'})
     except Exception as e:
         return jsonify({'success': False, 'message': f'初期化に失敗しました: {str(e)}'})
+
+@app.route('/api/update_initial_capacities', methods=['POST'])
+@admin_required
+def api_update_initial_capacities():
+    """初期定員設定更新API"""
+    try:
+        data = request.json
+        capacities_data = data.get('capacities', [])
+        
+        # 定員リストを作成
+        capacities = [15] * len(DEFAULT_TIMESLOTS)  # デフォルト値で初期化
+        for item in capacities_data:
+            index = item.get('index')
+            capacity = item.get('capacity', 15)
+            if 0 <= index < len(capacities):
+                capacities[index] = max(0, min(50, capacity))  # 0-50の範囲に制限
+        
+        save_initial_capacities(capacities)
+        return jsonify({'success': True, 'message': '初期定員設定を保存しました'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'保存に失敗しました: {str(e)}'})
+
+@app.route('/api/reset_to_default_capacities', methods=['POST'])
+@admin_required
+def api_reset_to_default_capacities():
+    """初期定員をデフォルト値にリセットAPI"""
+    try:
+        default_capacities = [15] * len(DEFAULT_TIMESLOTS)
+        save_initial_capacities(default_capacities)
+        return jsonify({'success': True, 'message': '初期定員をデフォルト値にリセットしました'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'リセットに失敗しました: {str(e)}'})
+
+@app.route('/api/set_bulk_initial_capacity', methods=['POST'])
+@admin_required
+def api_set_bulk_initial_capacity():
+    """全時間帯の初期定員を一括設定API"""
+    try:
+        data = request.json
+        capacity = int(data.get('capacity', 15))
+        
+        # 定員値の範囲チェック
+        capacity = max(0, min(50, capacity))
+        
+        # 全時間帯を同じ定員に設定
+        bulk_capacities = [capacity] * len(DEFAULT_TIMESLOTS)
+        save_initial_capacities(bulk_capacities)
+        
+        return jsonify({'success': True, 'message': f'全時間帯の初期定員を{capacity}名に設定しました'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'一括設定に失敗しました: {str(e)}'})
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000) 
