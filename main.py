@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session, make_response
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, make_response, Response
 import json
 import os
 import qrcode
@@ -9,9 +9,15 @@ import random
 import string
 import uuid
 from functools import wraps
+import threading
+import time
+import queue
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'  # セッション管理用
+
+# Server-Sent Events 用のクライアント管理
+sse_clients = {}  # {session_id: queue}
 
 # 管理者認証設定
 ADMIN_USERNAME = 'admin'
@@ -270,6 +276,17 @@ def api_qr_checkin():
             
             save_reservations(reservations)
             
+            # 利用者のセッションにSSEイベントを送信
+            session_id = reservation.get('session_id')
+            if session_id:
+                send_sse_event(session_id, 'checkin_completed', {
+                    'qr_code': reservation['qr_code'],
+                    'time': reservation['time'],
+                    'guests': reservation['guests'],
+                    'message': '管理者によりチェックインが完了しました'
+                })
+                print(f"[SSE送信] セッション {session_id[:8]} にチェックイン完了通知を送信")
+            
             return jsonify({
                 'success': True,
                 'reservation': {
@@ -331,6 +348,53 @@ def public_checkin_complete():
                          guests=reservation['guests'], 
                          qr_code=reservation['qr_code'],
                          status=reservation['status'])
+
+def send_sse_event(session_id, event_type, data):
+    """指定されたセッションIDにSSEイベントを送信"""
+    if session_id in sse_clients:
+        try:
+            sse_clients[session_id].put_nowait({
+                'event': event_type,
+                'data': data
+            })
+        except queue.Full:
+            # キューが満杯の場合は古いクライアントとみなして削除
+            del sse_clients[session_id]
+
+@app.route('/events')
+def events():
+    """Server-Sent Events エンドポイント"""
+    session_id = get_session_id()
+    
+    def event_stream():
+        # 新しいクライアントをキューに登録
+        client_queue = queue.Queue(maxsize=10)
+        sse_clients[session_id] = client_queue
+        
+        try:
+            # 接続確認メッセージを送信
+            yield f"data: {json.dumps({'event': 'connected', 'data': 'SSE接続が確立されました'})}\n\n"
+            
+            while True:
+                try:
+                    # タイムアウト付きでイベントを待機
+                    event = client_queue.get(timeout=30)
+                    yield f"data: {json.dumps(event)}\n\n"
+                except queue.Empty:
+                    # タイムアウト時はハートビートを送信
+                    yield f"data: {json.dumps({'event': 'heartbeat', 'data': 'alive'})}\n\n"
+                except Exception as e:
+                    print(f"SSE Error: {e}")
+                    break
+        finally:
+            # クライアント切断時にキューから削除
+            if session_id in sse_clients:
+                del sse_clients[session_id]
+    
+    response = Response(event_stream(), mimetype='text/event-stream')
+    response.headers['Cache-Control'] = 'no-cache'
+    response.headers['X-Accel-Buffering'] = 'no'
+    return response
 
 @app.route('/completion')
 def completion():
@@ -475,6 +539,18 @@ def api_checkin():
             reservation['checked_at'] = datetime.now().isoformat()
             
             save_reservations(reservations)
+            
+            # 利用者のセッションにSSEイベントを送信
+            session_id = reservation.get('session_id')
+            if session_id:
+                send_sse_event(session_id, 'checkin_completed', {
+                    'qr_code': reservation.get('qr_code', ''),
+                    'time': reservation['time'],
+                    'guests': reservation['guests'],
+                    'message': '管理者により手動チェックインが完了しました'
+                })
+                print(f"[SSE送信] セッション {session_id[:8]} に手動チェックイン完了通知を送信")
+            
             return jsonify({'success': True})
     
     return jsonify({'success': False, 'message': '該当する予約が見つかりません'})

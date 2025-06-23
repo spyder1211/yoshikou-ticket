@@ -4,6 +4,85 @@
 
 {% block extra_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<style>
+/* フローティングボタンのスタイル */
+.floating-navigation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 15px 20px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    border-top: 1px solid #e0e0e0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.floating-navigation .btn {
+    flex: 1;
+    margin: 0 5px;
+    padding: 15px 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.floating-navigation .btn:first-child {
+    background: #6c757d;
+    color: white;
+    flex: 1;
+}
+
+.floating-navigation .btn:last-child {
+    background: #008793;
+    color: white;
+    flex: 1;
+}
+
+.floating-navigation .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.floating-navigation .btn:disabled {
+    background: #cccccc !important;
+    color: #666666 !important;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* 通常のナビゲーションを非表示 */
+#step1 .navigation,
+#step2 .navigation,
+#step3 .navigation {
+    display: none;
+}
+
+/* コンテンツの下部余白を追加してフローティングボタンと重ならないようにする */
+.step {
+    padding-bottom: 100px;
+}
+
+@media (max-width: 768px) {
+    .floating-navigation {
+        padding: 12px 15px;
+    }
+    
+    .floating-navigation .btn {
+        padding: 12px 15px;
+        font-size: 1rem;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -151,6 +230,35 @@
 </div>
 
 {% endif %}
+
+<!-- フローティングナビゲーション（step1とstep2でのみ表示） -->
+<div class="floating-navigation" id="floating-nav-step1" style="display: none;">
+    <a href="{{ url_for('index') }}" class="btn">
+        ホームに戻る
+    </a>
+    <button onclick="goToStep2()" class="btn" id="floating-next-step1" disabled>
+        次へ進む
+    </button>
+</div>
+
+<div class="floating-navigation" id="floating-nav-step2" style="display: none;">
+    <button onclick="goToStep1()" class="btn">
+        戻る
+    </button>
+    <button onclick="goToStep3()" class="btn" id="floating-next-step2" disabled>
+        次へ進む
+    </button>
+</div>
+
+<div class="floating-navigation" id="floating-nav-step3" style="display: none;">
+    <button onclick="goToStep2()" class="btn">
+        戻る
+    </button>
+    <button onclick="confirmReservation()" class="btn">
+        予約を確定する
+    </button>
+</div>
+
 {% endblock %}
 
 {% block extra_scripts %}
@@ -169,6 +277,7 @@ function selectGuests(guests) {
     
     selectedGuests = guests;
     document.getElementById('next-step1').disabled = false;
+    document.getElementById('floating-next-step1').disabled = false;
 }
 
 function selectTime(time, available) {
@@ -186,6 +295,7 @@ function selectTime(time, available) {
     selectedTime = time;
     
     document.getElementById('next-step2').disabled = false;
+    document.getElementById('floating-next-step2').disabled = false;
 }
 
 function goToStep1() {
@@ -196,6 +306,10 @@ function goToStep1() {
         step.classList.remove('active', 'completed');
     });
     document.getElementById('progress-1').classList.add('active');
+    
+    // フローティングナビゲーションの表示制御
+    document.getElementById('floating-nav-step1').style.display = 'flex';
+    document.getElementById('floating-nav-step2').style.display = 'none';
 }
 
 async function goToStep2() {
@@ -210,6 +324,10 @@ async function goToStep2() {
     
     // 選択された人数を表示
     document.getElementById('selected-guests-display').textContent = selectedGuests;
+    
+    // フローティングナビゲーションの表示制御
+    document.getElementById('floating-nav-step1').style.display = 'none';
+    document.getElementById('floating-nav-step2').style.display = 'flex';
     
     // 人数に基づいて利用可能な時間帯を取得
     try {
@@ -253,6 +371,11 @@ function goToStep3() {
     document.getElementById('progress-2').classList.remove('active');
     document.getElementById('progress-3').classList.add('active');
     
+    // フローティングナビゲーションの表示制御
+    document.getElementById('floating-nav-step1').style.display = 'none';
+    document.getElementById('floating-nav-step2').style.display = 'none';
+    document.getElementById('floating-nav-step3').style.display = 'flex';
+    
     // 確認内容を表示
     document.getElementById('confirm-time').textContent = selectedTime;
     document.getElementById('confirm-guests').textContent = selectedGuests;
@@ -280,6 +403,9 @@ async function confirmReservation() {
             document.getElementById('step4').classList.add('active');
             
             document.getElementById('progress-3').classList.add('completed');
+            
+            // フローティングナビゲーションを非表示
+            document.getElementById('floating-nav-step3').style.display = 'none';
             
             // 予約内容を表示
             document.getElementById('final-time').textContent = result.reservation.time;
@@ -324,6 +450,128 @@ async function cancelReservation() {
         console.error('Error:', error);
         alert('キャンセル中にエラーが発生しました');
     }
+}
+
+// ページ読み込み時の初期設定
+document.addEventListener('DOMContentLoaded', function() {
+    // 初期状態ではstep1が表示されているので、step1のフローティングナビゲーションを表示
+    const step1Element = document.getElementById('step1');
+    if (step1Element && step1Element.classList.contains('active')) {
+        document.getElementById('floating-nav-step1').style.display = 'flex';
+    }
+    
+    // 既存の予約がある場合、SSE接続を開始
+    if (document.querySelector('.ticket')) {
+        initSSE();
+    }
+});
+
+function initSSE() {
+    if (typeof(EventSource) !== "undefined") {
+        const eventSource = new EventSource('/events');
+        
+        eventSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                handleSSEEvent(data);
+            } catch (e) {
+                console.error('SSE data parse error:', e);
+            }
+        };
+        
+        eventSource.onerror = function(event) {
+            console.log('SSE connection error, retrying in 5 seconds...');
+            eventSource.close();
+            setTimeout(initSSE, 5000);
+        };
+        
+        console.log('SSE connection established');
+    } else {
+        console.log('Server-Sent Events not supported');
+    }
+}
+
+function handleSSEEvent(data) {
+    console.log('SSE Event received:', data);
+    
+    switch(data.event) {
+        case 'checkin_completed':
+            // チェックイン完了通知を受信した場合、受付完了画面に遷移
+            showCheckinCompletedMessage();
+            setTimeout(() => {
+                window.location.href = '/checkin-complete?qr=' + data.data.qr_code;
+            }, 2000);
+            break;
+            
+        case 'connected':
+            console.log('SSE接続確立:', data.data);
+            break;
+            
+        case 'heartbeat':
+            // ハートビート - 何もしない
+            break;
+            
+        default:
+            console.log('未知のSSEイベント:', data);
+    }
+}
+
+function showCheckinCompletedMessage() {
+    // チェックイン完了メッセージを表示
+    const message = document.createElement('div');
+    message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: bounceIn 0.8s ease-out;
+    `;
+    message.innerHTML = `
+        <div style="font-size: 3em; margin-bottom: 15px;">🎊</div>
+        <h2 style="margin: 0 0 10px 0;">受付完了！</h2>
+        <p style="margin: 0; font-size: 1.1em;">まもなく受付完了画面に移動します...</p>
+    `;
+    
+    document.body.appendChild(message);
+    
+    // バウンスアニメーションを追加
+    if (!document.getElementById('bounce-animation-style')) {
+        const style = document.createElement('style');
+        style.id = 'bounce-animation-style';
+        style.textContent = `
+            @keyframes bounceIn {
+                0% {
+                    transform: translate(-50%, -50%) scale(0.3);
+                    opacity: 0;
+                }
+                50% {
+                    transform: translate(-50%, -50%) scale(1.05);
+                }
+                70% {
+                    transform: translate(-50%, -50%) scale(0.9);
+                }
+                100% {
+                    transform: translate(-50%, -50%) scale(1);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // 3秒後にメッセージを削除
+    setTimeout(() => {
+        if (message.parentNode) {
+            message.parentNode.removeChild(message);
+        }
+    }, 3000);
 }
 </script>
 {% endblock %}

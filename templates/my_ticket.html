@@ -513,6 +513,92 @@ document.addEventListener('DOMContentLoaded', function() {
             ticket.style.transform = 'translateY(0)';
         }, 200);
     }
+    
+    // Server-Sent Events接続を開始
+    initSSE();
 });
+
+function initSSE() {
+    if (typeof(EventSource) !== "undefined") {
+        const eventSource = new EventSource('/events');
+        
+        eventSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                handleSSEEvent(data);
+            } catch (e) {
+                console.error('SSE data parse error:', e);
+            }
+        };
+        
+        eventSource.onerror = function(event) {
+            console.log('SSE connection error, retrying in 5 seconds...');
+            eventSource.close();
+            setTimeout(initSSE, 5000);
+        };
+        
+        console.log('SSE connection established');
+    } else {
+        console.log('Server-Sent Events not supported');
+    }
+}
+
+function handleSSEEvent(data) {
+    console.log('SSE Event received:', data);
+    
+    switch(data.event) {
+        case 'checkin_completed':
+            // チェックイン完了通知を受信した場合、受付完了画面に遷移
+            showCheckinCompletedMessage();
+            setTimeout(() => {
+                window.location.href = '/checkin-complete?qr=' + data.data.qr_code;
+            }, 2000);
+            break;
+            
+        case 'connected':
+            console.log('SSE接続確立:', data.data);
+            break;
+            
+        case 'heartbeat':
+            // ハートビート - 何もしない
+            break;
+            
+        default:
+            console.log('未知のSSEイベント:', data);
+    }
+}
+
+function showCheckinCompletedMessage() {
+    // チェックイン完了メッセージを表示
+    const message = document.createElement('div');
+    message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        z-index: 10000;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        animation: bounceIn 0.8s ease-out;
+    `;
+    message.innerHTML = `
+        <div style="font-size: 3em; margin-bottom: 15px;">🎊</div>
+        <h2 style="margin: 0 0 10px 0;">受付完了！</h2>
+        <p style="margin: 0; font-size: 1.1em;">まもなく受付完了画面に移動します...</p>
+    `;
+    
+    document.body.appendChild(message);
+    
+    // 3秒後にメッセージを削除
+    setTimeout(() => {
+        if (message.parentNode) {
+            message.parentNode.removeChild(message);
+        }
+    }, 3000);
+}
 </script>
 {% endblock %} 
