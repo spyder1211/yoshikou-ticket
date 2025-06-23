@@ -152,8 +152,8 @@
     <div class="completion-header">
         <div class="completion-icon">🎊</div>
         {% if status == 'checked' %}
-            <h1>チェックイン完了！</h1>
-            <p>ご来場ありがとうございます<br>お疲れ様でした！</p>
+            <h1>受付完了！</h1>
+            <p>2年5組「海底二万マイル」へようこそ！<br>スタッフがご案内いたします</p>
         {% else %}
             <h1>予約確認完了！</h1>
             <p>ご予約を確認いたしました<br>当日は整理券をお持ちください</p>
@@ -183,7 +183,7 @@
             <span class="detail-label">ステータス:</span>
             <span class="detail-value">
                 {% if status == 'checked' %}
-                    <span class="status-badge status-checked">チェックイン済み</span>
+                    <span class="status-badge status-checked">受付完了</span>
                 {% else %}
                     <span class="status-badge status-active">予約済み</span>
                 {% endif %}
@@ -194,9 +194,11 @@
     <!-- 案内メッセージ -->
     {% if status == 'checked' %}
         <div class="instructions">
-            <h3>ありがとうございました！</h3>
-            <p>本日は2-5クラス企画「海底二万マイル」にご参加いただき、ありがとうございました。</p>
-            <p>楽しんでいただけましたでしょうか？またのご来場をお待ちしております！</p>
+            <h3>🌊 海底二万マイルの世界へ！ 🐙</h3>
+            <p><strong>受付が完了しました！</strong></p>
+            <p>ネモ船長と一緒に海底の冒険をお楽しみください。</p>
+            <p>スタッフがまもなくご案内いたします。しばらくお待ちください。</p>
+            <p style="color: #008793; font-weight: bold;">素晴らしい冒険の始まりです！🌊</p>
         </div>
     {% else %}
         <div class="instructions">
@@ -216,12 +218,56 @@
 
 {% block extra_scripts %}
 <script>
-// ページロード時のメッセージ
+// ページロード時の処理
 document.addEventListener('DOMContentLoaded', function() {
-    // 少し遅らせてウェルカムメッセージを表示（オプション）
-    setTimeout(() => {
-        console.log('チェックイン完了画面が表示されました');
-    }, 500);
+    const status = '{{ status }}';
+    
+    // チェックイン完了時の特別な処理
+    if (status === 'checked') {
+        // コンソールログ
+        console.log('QRコード読み取り - 受付完了');
+        
+        // アニメーション効果
+        const header = document.querySelector('.completion-header');
+        if (header) {
+            header.style.animation = 'bounceIn 1s ease-out';
+        }
+        
+        // 音声通知（ブラウザがサポートしている場合）
+        if ('speechSynthesis' in window) {
+            setTimeout(() => {
+                const utterance = new SpeechSynthesisUtterance('受付が完了しました。海底二万マイルの世界へようこそ！');
+                utterance.lang = 'ja-JP';
+                utterance.volume = 0.5;
+                speechSynthesis.speak(utterance);
+            }, 1000);
+        }
+    }
+    
+    // ページ表示ログ
+    console.log('受付完了画面が表示されました - Status:', status);
 });
+
+// バウンス アニメーション
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes bounceIn {
+        0% {
+            transform: scale(0.3);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+`;
+document.head.appendChild(style);
 </script>
 {% endblock %} 

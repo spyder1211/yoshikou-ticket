@@ -317,7 +317,14 @@ def public_checkin_complete():
     if reservation.get('status') == 'active':
         reservation['status'] = 'checked'
         reservation['checked_at'] = datetime.now().isoformat()
+        
+        # ログ出力
+        print(f"[QR受付完了] 時間: {reservation['time']}, 人数: {reservation['guests']}名, QR: {reservation['qr_code']}")
+        
         save_reservations(reservations)
+    else:
+        # 既にチェックイン済みの場合のログ
+        print(f"[QR確認] 既にチェックイン済み - QR: {reservation['qr_code']}")
     
     return render_template('public_checkin_complete.html', 
                          time=reservation['time'], 
