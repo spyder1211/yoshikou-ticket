@@ -251,9 +251,15 @@
 
 <!-- メインアクション -->
 <div class="action-section">
+    {% if active_reservation %}
+    <a href="{{ url_for('my_ticket') }}" class="main-cta">
+        冒険を始める
+    </a>
+    {% else %}
     <a href="{{ url_for('reserve') }}" class="main-cta">
         冒険を始める
     </a>
+    {% endif %}
     
     {% if active_reservation %}
     <a href="{{ url_for('my_ticket') }}" class="secondary-cta">
@@ -296,9 +302,15 @@
     <h3>準備はいかがですか？</h3>
     <p>深海の冒険が始まります。ネモ船長があなたをお待ちしています！</p>
     
+    {% if active_reservation %}
+    <a href="{{ url_for('my_ticket') }}" class="main-cta">
+        冒険を始める
+    </a>
+    {% else %}
     <a href="{{ url_for('reserve') }}" class="main-cta">
         冒険を始める
     </a>
+    {% endif %}
     
    
 </div>
