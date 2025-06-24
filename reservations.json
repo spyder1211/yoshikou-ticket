@@ -3,7 +3,7 @@
     "time": "12:00 - 12:30",
     "guests": 3,
     "date": "2025/06/24",
-    "status": "active",
+    "status": "cancelled",
     "qr_code": "QR-12001230-3-b0f4ba22",
     "session_id": "b0f4ba22-8079-4d2d-82ee-0da3d0a8d083",
     "created_at": "2025-06-24T11:46:01.511563",
