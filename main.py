@@ -19,6 +19,11 @@ app.secret_key = 'your-secret-key-change-this-in-production'  # セッション�
 # Server-Sent Events 用のクライアント管理
 sse_clients = {}  # {session_id: queue}
 
+# キャッシュ用のグローバル変数
+_timeslots_cache = None
+_cache_timestamp = 0
+CACHE_DURATION = 30  # 30秒
+
 # 管理者認証設定
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'password123'
@@ -68,8 +73,25 @@ def load_timeslots():
 
 def save_timeslots(timeslots):
     """時間帯データを保存"""
+    global _timeslots_cache, _cache_timestamp
     with open(TIMESLOTS_FILE, 'w', encoding='utf-8') as f:
         json.dump(timeslots, f, ensure_ascii=False, indent=2)
+    # キャッシュを無効化
+    _timeslots_cache = None
+    _cache_timestamp = 0
+
+def load_timeslots_cached():
+    """キャッシュ付き時間帯データ読み込み"""
+    global _timeslots_cache, _cache_timestamp
+    
+    current_time = time.time()
+    if (_timeslots_cache is None or 
+        current_time - _cache_timestamp > CACHE_DURATION):
+        
+        _timeslots_cache = load_timeslots()
+        _cache_timestamp = current_time
+    
+    return _timeslots_cache.copy()
 
 def load_reservations():
     """予約データを読み込み"""
@@ -408,7 +430,7 @@ def completion():
 @app.route('/api/timeslots/<int:guests>')
 def api_timeslots_by_guests(guests):
     """人数に基づいて利用可能な時間帯を取得するAPI"""
-    timeslots = load_timeslots()
+    timeslots = load_timeslots_cached()
     # 指定された人数で予約可能な時間帯のみをフィルタリング
     available_timeslots = [slot for slot in timeslots if slot['available'] >= guests]
     return jsonify({'timeslots': available_timeslots})
