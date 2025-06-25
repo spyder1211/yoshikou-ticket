@@ -1,7 +1,1131 @@
 /* ==============================
+   時間帯選択ステップ2の超革新的スタイル
+   ============================== */
+
+/* 深海タイムライン背景 */
+.deep-sea-timeline {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.depth-indicator {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 191, 255, 0.3) 20%, 
+        rgba(0, 191, 255, 0.6) 50%, 
+        rgba(0, 191, 255, 0.3) 80%, 
+        transparent 100%);
+    animation: depthPulse 4s ease-in-out infinite;
+}
+
+.depth-1 {
+    top: 20%;
+    animation-delay: 0s;
+}
+
+.depth-2 {
+    top: 50%;
+    animation-delay: 1.3s;
+}
+
+.depth-3 {
+    top: 80%;
+    animation-delay: 2.6s;
+}
+
+@keyframes depthPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scaleX(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scaleX(1.2);
+    }
+}
+
+/* 海洋生物 */
+.sea-creature {
+    position: absolute;
+    font-size: 2rem;
+    animation: creatureFloat 8s ease-in-out infinite;
+    z-index: 2;
+}
+
+.creature-1 {
+    top: 15%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.creature-2 {
+    top: 60%;
+    right: 10%;
+    animation-delay: 3s;
+}
+
+.creature-3 {
+    bottom: 20%;
+    left: 15%;
+    animation-delay: 6s;
+}
+
+@keyframes creatureFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0.6;
+    }
+    25% {
+        transform: translateY(-20px) rotate(5deg);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-10px) rotate(-3deg);
+        opacity: 1;
+    }
+    75% {
+        transform: translateY(-30px) rotate(2deg);
+        opacity: 0.7;
+    }
+}
+
+@keyframes creatureSwim {
+    0% {
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: translateX(50px) translateY(-20px) rotate(10deg) scale(1.2);
+    }
+    100% {
+        transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+    }
+}
+
+/* 乗組員情報表示 */
+.crew-info-3d {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px auto;
+    padding: 20px 40px;
+    background: linear-gradient(135deg, 
+        rgba(13, 71, 161, 0.1) 0%,
+        rgba(21, 101, 192, 0.1) 100%);
+    border-radius: 50px;
+    border: 2px solid rgba(13, 71, 161, 0.3);
+    backdrop-filter: blur(10px);
+    max-width: 400px;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.crew-glow {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: radial-gradient(circle, rgba(13, 71, 161, 0.2) 0%, transparent 70%);
+    border-radius: 55px;
+    animation: crewGlow 3s ease-in-out infinite alternate;
+}
+
+.crew-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+    animation: crewIconPulse 2s ease-in-out infinite;
+}
+
+.crew-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.crew-count {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #0d47a1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.crew-decoration {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, #0d47a1 50%, transparent 100%);
+    border-radius: 1px;
+}
+
+@keyframes crewGlow {
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+@keyframes crewIconPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* 3D時間ボヤージコンテナー */
+.time-voyage-container {
+    position: relative;
+    margin: 40px 0;
+    z-index: 10;
+}
+
+.timeline-rail {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    right: 20px;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        rgba(0, 123, 191, 0.3) 0%,
+        rgba(0, 123, 191, 0.6) 50%,
+        rgba(0, 123, 191, 0.3) 100%);
+    border-radius: 2px;
+    transform: translateY(-50%);
+    box-shadow: 
+        0 0 20px rgba(0, 123, 191, 0.3),
+        inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease;
+}
+
+.timeline-rail.active-selection {
+    box-shadow: 
+        0 0 40px rgba(0, 123, 191, 0.8),
+        inset 0 1px 3px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(90deg, 
+        rgba(0, 123, 191, 0.6) 0%,
+        rgba(0, 191, 255, 0.8) 50%,
+        rgba(0, 123, 191, 0.6) 100%);
+}
+
+.time-slots-3d {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    perspective: 1200px;
+}
+
+/* 3D時間ボヤージカード */
+.time-voyage-card {
+    position: relative;
+    height: 180px;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: cardSlideIn 0.8s ease-out;
+}
+
+@keyframes cardSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(50px) rotateX(-20deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}
+
+.card-depth-layer {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(135deg, 
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.2) 100%);
+    border-radius: 20px;
+    filter: blur(3px);
+    z-index: -1;
+}
+
+.voyage-surface {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(240, 248, 255, 0.9) 100%);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.1),
+        0 8px 16px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(15px);
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.time-voyage-card:hover .voyage-surface {
+    transform: translateZ(25px) rotateX(8deg) rotateY(2deg);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.15),
+        0 12px 24px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.time-voyage-card.selected .voyage-surface {
+    background: linear-gradient(135deg, 
+        rgba(0, 123, 191, 0.9) 0%,
+        rgba(13, 71, 161, 0.9) 100%);
+    color: white;
+    transform: translateZ(35px) rotateX(12deg) rotateY(3deg);
+    box-shadow: 
+        0 40px 80px rgba(0, 123, 191, 0.3),
+        0 20px 40px rgba(13, 71, 161, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.time-voyage-card.disabled .voyage-surface {
+    background: linear-gradient(135deg, 
+        rgba(128, 128, 128, 0.3) 0%,
+        rgba(169, 169, 169, 0.3) 100%);
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.departure-badge {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.badge-icon {
+    font-size: 1.8rem;
+    margin-right: 12px;
+    animation: anchorSway 3s ease-in-out infinite;
+}
+
+.time-info {
+    flex: 1;
+}
+
+.departure-time {
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 3px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.voyage-status {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.capacity-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.capacity-icon {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+.capacity-status {
+    font-weight: 500;
+}
+
+.capacity-status.full {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+.capacity-status.available {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.time-voyage-card.selected .capacity-status {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* 深度ゲージ */
+.depth-gauge {
+    width: 100%;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.gauge-fill {
+    height: 100%;
+    background: linear-gradient(90deg, 
+        #4caf50 0%,
+        #8bc34a 50%,
+        #cddc39 100%);
+    border-radius: 3px;
+    transition: all 0.5s ease;
+    position: relative;
+}
+
+.gauge-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 100%);
+    animation: gaugeScan 2s ease-in-out infinite;
+}
+
+@keyframes gaugeScan {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes anchorSway {
+    0%, 100% {
+        transform: rotate(-5deg);
+    }
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+/* 波紋エフェクト */
+.wave-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(0, 191, 255, 0.4) 0%, 
+        rgba(0, 191, 255, 0.2) 30%,
+        transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: all 0.8s ease;
+}
+
+.wave-effect.active {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+}
+
+/* 選択グロー */
+.selection-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(0, 123, 191, 0.0) 0%, transparent 70%);
+    border-radius: 30px;
+    transition: all 0.4s ease;
+    pointer-events: none;
+}
+
+.time-voyage-card.selected .selection-glow {
+    background: radial-gradient(circle, rgba(0, 123, 191, 0.3) 0%, transparent 70%);
+    animation: selectionPulse 2s ease-in-out infinite;
+}
+
+@keyframes selectionPulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* 時間選択状態表示 */
+.time-selection-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px auto;
+    padding: 25px 40px;
+    background: linear-gradient(135deg, 
+        rgba(76, 175, 80, 0.1) 0%,
+        rgba(139, 195, 74, 0.1) 100%);
+    border-radius: 60px;
+    border: 2px solid rgba(76, 175, 80, 0.3);
+    position: relative;
+    max-width: 500px;
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    overflow: hidden;
+}
+
+.status-wave {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+    border-radius: 70px;
+    animation: statusWave 3s ease-in-out infinite;
+}
+
+.selected-time-info {
+    display: flex;
+    align-items: center;
+    z-index: 2;
+}
+
+.time-icon {
+    font-size: 2.5rem;
+    margin-right: 20px;
+    animation: timeIconRotate 4s linear infinite;
+}
+
+.time-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.selected-time-text {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4caf50;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+}
+
+.departure-text {
+    font-size: 1rem;
+    color: #4caf50;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+@keyframes statusWave {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1) rotate(0deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05) rotate(180deg);
+    }
+}
+
+@keyframes timeIconRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* フェードインスケール */
+.fade-in-scale {
+    animation: fadeInScale 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ==============================
+   予約確認ステップ3の超革新的スタイル
+   ============================== */
+
+/* ノーチラス探険背景 */
+.nautilus-voyage-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+    background: radial-gradient(circle at 30% 20%, rgba(0, 77, 122, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(0, 135, 147, 0.1) 0%, transparent 50%);
+}
+
+/* 船窓（ポートホール） */
+.porthole {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, 
+        rgba(135, 206, 235, 0.3) 0%,
+        rgba(0, 123, 191, 0.2) 40%,
+        rgba(0, 77, 122, 0.4) 100%);
+    border: 3px solid rgba(0, 77, 122, 0.3);
+    box-shadow: 
+        inset 0 0 20px rgba(135, 206, 235, 0.5),
+        0 0 30px rgba(0, 123, 191, 0.3);
+    transition: all 0.5s ease;
+}
+
+.porthole.active {
+    box-shadow: 
+        inset 0 0 30px rgba(135, 206, 235, 0.8),
+        0 0 50px rgba(0, 191, 255, 0.6);
+    animation: portholeGlow 3s ease-in-out infinite;
+}
+
+.porthole-1 {
+    top: 10%;
+    left: 5%;
+}
+
+.porthole-2 {
+    top: 30%;
+    right: 8%;
+}
+
+.porthole-3 {
+    bottom: 15%;
+    left: 10%;
+}
+
+@keyframes portholeGlow {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+/* 深海流 */
+.deep-current {
+    position: absolute;
+    width: 150px;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(0, 191, 255, 0.4) 20%,
+        rgba(0, 191, 255, 0.7) 50%,
+        rgba(0, 191, 255, 0.4) 80%,
+        transparent 100%);
+    border-radius: 1px;
+    animation: currentFloat 6s ease-in-out infinite;
+}
+
+.current-1 {
+    top: 25%;
+    right: 20%;
+    animation-delay: 0s;
+}
+
+.current-2 {
+    bottom: 35%;
+    left: 15%;
+    animation-delay: 3s;
+}
+
+@keyframes currentFloat {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translateX(0) scaleX(0.8);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translateX(20px) scaleX(1.2);
+    }
+}
+
+@keyframes currentFlow {
+    0% {
+        transform: translateX(-50px) scaleX(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(0) scaleX(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(50px) scaleX(0.5);
+        opacity: 0;
+    }
+}
+
+/* 3Dノーチラスチケット */
+.nautilus-ticket-3d {
+    position: relative;
+    max-width: 600px;
+    margin: 40px auto;
+    perspective: 1000px;
+    z-index: 10;
+    transform: rotateY(-10deg) rotateX(5deg);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    opacity: 0;
+    transform: translateY(50px) rotateY(-20deg) rotateX(-10deg) scale(0.8);
+}
+
+.nautilus-ticket-3d.ticket-reveal {
+    opacity: 1;
+    transform: translateY(0) rotateY(0deg) rotateX(0deg) scale(1);
+}
+
+.nautilus-ticket-3d:hover {
+    transform: rotateY(2deg) rotateX(-2deg) translateZ(20px);
+}
+
+/* ホログラムエフェクト */
+.ticket-hologram {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg,
+        transparent 0%,
+        rgba(0, 191, 255, 0.1) 25%,
+        rgba(0, 255, 255, 0.2) 50%,
+        rgba(0, 191, 255, 0.1) 75%,
+        transparent 100%);
+    border-radius: 25px;
+    opacity: 0;
+    transition: all 0.5s ease;
+    pointer-events: none;
+}
+
+.ticket-hologram.hologram-active {
+    opacity: 1;
+    animation: hologramScan 4s ease-in-out infinite;
+}
+
+@keyframes hologramScan {
+    0%, 100% {
+        background: linear-gradient(45deg,
+            transparent 0%,
+            rgba(0, 191, 255, 0.1) 25%,
+            rgba(0, 255, 255, 0.2) 50%,
+            rgba(0, 191, 255, 0.1) 75%,
+            transparent 100%);
+    }
+    50% {
+        background: linear-gradient(225deg,
+            transparent 0%,
+            rgba(0, 255, 255, 0.2) 25%,
+            rgba(0, 191, 255, 0.3) 50%,
+            rgba(0, 255, 255, 0.2) 75%,
+            transparent 100%);
+    }
+}
+
+/* チケット表面 */
+.ticket-surface {
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(240, 248, 255, 0.9) 50%,
+        rgba(230, 244, 255, 0.95) 100%);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.15),
+        0 15px 30px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+
+/* チケットヘッダー */
+.ticket-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px dashed rgba(0, 123, 191, 0.3);
+}
+
+.nautilus-emblem {
+    font-size: 3rem;
+    animation: emblemRotate 8s linear infinite;
+}
+
+.ticket-title {
+    text-align: center;
+    flex: 1;
+}
+
+.expedition-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #0d47a1;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.security-seal {
+    font-size: 2rem;
+    color: #0d47a1;
+    animation: sealPulse 3s ease-in-out infinite;
+}
+
+@keyframes emblemRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes sealPulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+}
+
+/* 探険詳細 */
+.voyage-details {
+    margin: 30px 0;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(0, 123, 191, 0.1);
+    transition: all 0.3s ease;
+}
+
+.detail-row:hover {
+    background: rgba(0, 123, 191, 0.05);
+    transform: translateX(5px);
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 500;
+    color: #0d47a1;
+    font-size: 1rem;
+}
+
+.detail-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.departure-time {
+    color: #1976d2;
+    font-size: 1.3rem;
+}
+
+.crew-count {
+    color: #2e7d32;
+}
+
+.expedition-date {
+    color: #7b1fa2;
+}
+
+.destination {
+    background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* チケット特徴 */
+.ticket-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.feature-badge {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, 
+        rgba(0, 123, 191, 0.1) 0%,
+        rgba(13, 71, 161, 0.1) 100%);
+    border-radius: 25px;
+    border: 1px solid rgba(0, 123, 191, 0.2);
+    transition: all 0.3s ease;
+}
+
+.feature-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 191, 0.2);
+}
+
+.badge-icon {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+.badge-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #0d47a1;
+}
+
+/* 確認ゾーン */
+.confirmation-zone {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px dashed rgba(255, 152, 0, 0.5);
+}
+
+.warning-notice {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, 
+        rgba(255, 152, 0, 0.1) 0%,
+        rgba(255, 193, 7, 0.1) 100%);
+    border-radius: 15px;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.warning-icon {
+    font-size: 1.5rem;
+    margin-right: 12px;
+    animation: warningBlink 2s ease-in-out infinite;
+}
+
+.warning-text {
+    font-size: 0.9rem;
+    color: #e65100;
+    font-weight: 500;
+}
+
+@keyframes warningBlink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* チケットミシン目 */
+.ticket-perforation {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 8px,
+        rgba(0, 123, 191, 0.3) 8px,
+        rgba(0, 123, 191, 0.3) 10px
+    );
+    transform: translateY(-50%);
+}
+
+/* 探険アクション */
+.expedition-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 40px 0;
+    z-index: 10;
+    position: relative;
+}
+
+.action-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 20px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-decoration: none;
+    overflow: hidden;
+}
+
+.return-btn {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+    color: white;
+    box-shadow: 0 10px 25px rgba(108, 117, 125, 0.3);
+}
+
+.return-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(108, 117, 125, 0.4);
+}
+
+.confirm-btn {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+    position: relative;
+}
+
+.confirm-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 20px 40px rgba(40, 167, 69, 0.4);
+}
+
+.btn-icon {
+    font-size: 1.3rem;
+    margin-right: 10px;
+}
+
+.btn-text {
+    position: relative;
+    z-index: 2;
+}
+
+.btn-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle, rgba(40, 167, 69, 0.3) 0%, transparent 70%);
+    border-radius: 50px;
+    animation: btnGlow 2s ease-in-out infinite;
+    opacity: 0;
+}
+
+.confirm-btn:hover .btn-glow {
+    opacity: 1;
+}
+
+@keyframes btnGlow {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .nautilus-ticket-3d {
+        margin: 20px;
+        transform: none;
+    }
+    
+    .ticket-surface {
+        padding: 20px;
+    }
+    
+    .ticket-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .expedition-name {
+        font-size: 1.4rem;
+    }
+    
+    .ticket-features {
+        grid-template-columns: 1fr;
+    }
+    
+    .expedition-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+}
+
+/* ==============================
    予約画面（Index）のスタイル
    ============================== */
 
+/* ステップコンテナーの相対位置設定 */
+.step {
+    position: relative;
+    min-height: 600px;
+}
+
+/* 旧い時間スロットスタイル（互換性のため保持） */
 .time-slot {
     background: linear-gradient(45deg, #f8f9fa, #e9ecef);
     border: 2px solid #dee2e6;
@@ -47,6 +1171,7 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* 旧いチケットスタイル（互換性のため保持） */
 .ticket {
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     border: 3px dashed #667eea;
@@ -81,12 +1206,482 @@
 
 .step {
     display: none;
+    position: relative;
+    min-height: 600px;
+    padding: 20px 0;
 }
 
 .step.active {
     display: block;
+    animation: stepFadeIn 0.6s ease-out;
 }
 
+@keyframes stepFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==============================
+   新しい超革新的デザインシステム
+   ============================== */
+
+/* 海底世界のパーティクルエフェクト */
+.ocean-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(135, 206, 235, 0.4) 100%);
+    border-radius: 50%;
+    animation: bubbleFloat 4s ease-in-out infinite;
+    backdrop-filter: blur(2px);
+    box-shadow: 
+        0 0 20px rgba(135, 206, 235, 0.5),
+        inset 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.bubble-1 {
+    width: 20px;
+    height: 20px;
+    left: 10%;
+    animation-delay: 0s;
+    animation-duration: 3s;
+}
+
+.bubble-2 {
+    width: 15px;
+    height: 15px;
+    left: 20%;
+    animation-delay: 1s;
+    animation-duration: 4s;
+}
+
+.bubble-3 {
+    width: 25px;
+    height: 25px;
+    left: 70%;
+    animation-delay: 2s;
+    animation-duration: 3.5s;
+}
+
+.bubble-4 {
+    width: 12px;
+    height: 12px;
+    left: 80%;
+    animation-delay: 0.5s;
+    animation-duration: 5s;
+}
+
+.bubble-5 {
+    width: 18px;
+    height: 18px;
+    left: 90%;
+    animation-delay: 1.5s;
+    animation-duration: 4.5s;
+}
+
+@keyframes bubbleFloat {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 太陽光線エフェクト */
+.sunlight {
+    position: absolute;
+    top: -50px;
+    width: 2px;
+    height: 200px;
+    background: linear-gradient(to bottom, 
+        rgba(255, 255, 255, 0.8) 0%, 
+        rgba(255, 255, 255, 0.4) 50%, 
+        rgba(255, 255, 255, 0) 100%);
+    animation: sunlightShine 6s ease-in-out infinite;
+    transform-origin: top;
+}
+
+.sunlight-1 {
+    left: 15%;
+    animation-delay: 0s;
+}
+
+.sunlight-2 {
+    left: 45%;
+    animation-delay: 2s;
+}
+
+.sunlight-3 {
+    left: 75%;
+    animation-delay: 4s;
+}
+
+@keyframes sunlightShine {
+    0%, 100% {
+        opacity: 0.3;
+        transform: rotate(-5deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: rotate(5deg);
+    }
+}
+
+/* 3D日付バッジ */
+.date-badge-3d {
+    position: relative;
+    display: inline-block;
+    margin: 20px 0 40px 0;
+    z-index: 10;
+}
+
+.badge-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(33, 150, 243, 0.4) 0%, transparent 70%);
+    border-radius: 50px;
+    animation: badgeGlow 2s ease-in-out infinite alternate;
+}
+
+.badge-text {
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: perspective(1000px) rotateX(10deg);
+    transition: all 0.3s ease;
+}
+
+.badge-text:hover {
+    transform: perspective(1000px) rotateX(0deg) translateY(-5px);
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+@keyframes badgeGlow {
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+/* 3Dステップヘッダー */
+.step-header-3d {
+    text-align: center;
+    margin: 40px 0;
+    position: relative;
+    z-index: 10;
+}
+
+.glowing-title {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    margin-bottom: 15px;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+}
+
+.title-icon {
+    font-size: 1.2em;
+    margin-right: 15px;
+    display: inline-block;
+    animation: iconFloat 3s ease-in-out infinite;
+}
+
+.title-decoration {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #667eea 50%, transparent 100%);
+    border-radius: 2px;
+    animation: decorationGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes decorationGlow {
+    0% {
+        opacity: 0.5;
+        box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+    }
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+.subtitle-glow {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.9;
+    animation: subtitleFade 4s ease-in-out infinite;
+}
+
+@keyframes subtitleFade {
+    0%, 100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+/* 3D人数選択グリッド */
+.guests-grid-3d {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+    margin: 40px 0;
+    perspective: 1000px;
+    position: relative;
+    z-index: 10;
+}
+
+.guest-card-3d {
+    position: relative;
+    height: 150px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+}
+
+.card-surface {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.9) 0%, 
+        rgba(255, 255, 255, 0.7) 100%);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.1),
+        0 5px 15px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+    overflow: hidden;
+}
+
+.guest-card-3d:hover .card-surface {
+    transform: translateZ(20px) rotateX(5deg);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.15),
+        0 10px 30px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.guest-card-3d.selected .card-surface {
+    background: linear-gradient(135deg, 
+        rgba(102, 126, 234, 0.9) 0%, 
+        rgba(118, 75, 162, 0.9) 100%);
+    color: white;
+    transform: translateZ(30px) rotateX(10deg);
+    box-shadow: 
+        0 30px 60px rgba(102, 126, 234, 0.3),
+        0 15px 35px rgba(118, 75, 162, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.person-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+.number-display {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.text-label {
+    font-size: 1rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.guest-card-3d.selected .person-icon,
+.guest-card-3d.selected .number-display,
+.guest-card-3d.selected .text-label {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes iconPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* リップルエフェクト */
+.ripple-effect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: all 0.6s ease;
+}
+
+.ripple-effect.active {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+}
+
+/* パルスアニメーション */
+.pulse-animation {
+    animation: cardPulse 0.6s ease-out;
+}
+
+@keyframes cardPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 選択状態表示 */
+.selection-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, 
+        rgba(40, 167, 69, 0.1) 0%, 
+        rgba(32, 201, 151, 0.1) 100%);
+    border-radius: 50px;
+    border: 2px solid rgba(40, 167, 69, 0.3);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    z-index: 10;
+}
+
+.status-glow {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle, rgba(40, 167, 69, 0.2) 0%, transparent 70%);
+    border-radius: 60px;
+    animation: statusGlow 2s ease-in-out infinite alternate;
+}
+
+.selected-count {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-right: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.selected-text {
+    color: #28a745;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+@keyframes statusGlow {
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* フェードインアニメーション */
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 旧いスタイルのバックアップ（互換性のため） */
 .guests-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));

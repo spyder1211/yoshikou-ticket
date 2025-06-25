@@ -58,5 +58,65 @@
     "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
     "created_at": "2025-06-26T00:06:51.222503",
     "user_image": null
+  },
+  {
+    "time": "14:45 - 15:15",
+    "guests": 3,
+    "date": "2025/06/27",
+    "status": "cancelled",
+    "qr_code": "QR-14451515-3-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T00:17:11.904680",
+    "user_image": null
+  },
+  {
+    "time": "14:15 - 14:45",
+    "guests": 2,
+    "date": "2025/06/27",
+    "status": "cancelled",
+    "qr_code": "QR-14151445-2-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T00:19:59.475169",
+    "user_image": null
+  },
+  {
+    "time": "14:45 - 15:15",
+    "guests": 4,
+    "date": "2025/06/27",
+    "status": "cancelled",
+    "qr_code": "QR-14451515-4-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T00:24:07.695113",
+    "user_image": null
+  },
+  {
+    "time": "15:15 - 15:45",
+    "guests": 5,
+    "date": "2025/06/27",
+    "status": "cancelled",
+    "qr_code": "QR-15151545-5-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T00:27:19.861809",
+    "user_image": null
+  },
+  {
+    "time": "14:15 - 14:45",
+    "guests": 5,
+    "date": "2025/06/27",
+    "status": "cancelled",
+    "qr_code": "QR-14151445-5-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T00:41:14.283179",
+    "user_image": null
+  },
+  {
+    "time": "14:15 - 14:45",
+    "guests": 2,
+    "date": "2025/06/27",
+    "status": "active",
+    "qr_code": "QR-14151445-2-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T00:48:38.951069",
+    "user_image": null
   }
 ]

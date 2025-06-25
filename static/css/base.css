@@ -1,73 +1,391 @@
-/* 共通スタイル */
+/* ==============================
+   超革新的モダンデザインシステム
+   ============================== */
+
+/* グローバルリセット */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* フォントインポート */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* CSSカスタムプロパティ */
+:root {
+    /* 深海カラーパレット */
+    --ocean-deep: #0a1929;
+    --ocean-primary: #0d47a1;
+    --ocean-secondary: #1976d2;
+    --ocean-accent: #00bcd4;
+    --ocean-light: #e3f2fd;
+    --nautilus-gold: #ffb300;
+    --coral-red: #ff5722;
+    
+    /* グラデーション */
+    --gradient-primary: linear-gradient(135deg, #0a1929 0%, #0d47a1 50%, #1976d2 100%);
+    --gradient-ocean: linear-gradient(135deg, #006064 0%, #00838f 50%, #00acc1 100%);
+    --gradient-coral: linear-gradient(135deg, #d84315 0%, #ff5722 50%, #ff7043 100%);
+    
+    /* シャドウ */
+    --shadow-depth-1: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --shadow-depth-2: 0 8px 32px rgba(0, 0, 0, 0.15);
+    --shadow-depth-3: 0 16px 48px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 30px rgba(0, 188, 212, 0.3);
+    
+    /* スペーシング */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    
+    /* ボーダーラジウス */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+}
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(13, 71, 161, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #0a1929 0%, #0d47a1 50%, #1976d2 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: var(--space-md);
+    position: relative;
+    overflow-x: hidden;
 }
 
-.container {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+/* 海底世界の背景アニメーション */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 30% 10%, rgba(0, 255, 255, 0.03) 0%, transparent 30%),
+        radial-gradient(circle at 70% 90%, rgba(135, 206, 235, 0.03) 0%, transparent 30%),
+        radial-gradient(circle at 10% 60%, rgba(0, 191, 255, 0.02) 0%, transparent 40%);
+    animation: underwaterShimmer 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
 }
 
+@keyframes underwaterShimmer {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1) rotate(0deg);
+    }
+    33% {
+        opacity: 0.8;
+        transform: scale(1.1) rotate(120deg);
+    }
+    66% {
+        opacity: 0.6;
+        transform: scale(0.9) rotate(240deg);
+    }
+}
+
+/* モダンコンテナー */
+.container {
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.95) 0%,
+            rgba(255, 255, 255, 0.9) 50%,
+            rgba(248, 250, 252, 0.95) 100%);
+    border-radius: var(--radius-xl);
+    box-shadow: 
+        var(--shadow-depth-3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    padding: var(--space-xl);
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* コンテナーのグローエフェクト */
+.container::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, 
+        rgba(0, 188, 212, 0.3) 0%,
+        rgba(13, 71, 161, 0.3) 25%,
+        rgba(25, 118, 210, 0.3) 50%,
+        rgba(0, 188, 212, 0.3) 75%,
+        rgba(13, 71, 161, 0.3) 100%);
+    border-radius: calc(var(--radius-xl) + 2px);
+    z-index: -1;
+    animation: containerGlow 8s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.container:hover::before {
+    opacity: 1;
+}
+
+@keyframes containerGlow {
+    0%, 100% {
+        background: linear-gradient(45deg, 
+            rgba(0, 188, 212, 0.2) 0%,
+            rgba(13, 71, 161, 0.2) 25%,
+            rgba(25, 118, 210, 0.2) 50%,
+            rgba(0, 188, 212, 0.2) 75%,
+            rgba(13, 71, 161, 0.2) 100%);
+    }
+    50% {
+        background: linear-gradient(225deg, 
+            rgba(13, 71, 161, 0.4) 0%,
+            rgba(0, 188, 212, 0.4) 25%,
+            rgba(25, 118, 210, 0.4) 50%,
+            rgba(13, 71, 161, 0.4) 75%,
+            rgba(0, 188, 212, 0.4) 100%);
+    }
+}
+
+/* モダンタイポグラフィ */
 h1 {
     text-align: center;
-    color: #333;
-    margin-bottom: 30px;
-    font-size: 2.5em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: var(--space-xl);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-shadow: none;
+    position: relative;
 }
 
+/* タイトルのグローエフェクト */
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 4px;
+    background: var(--gradient-ocean);
+    border-radius: 2px;
+    animation: titleGlow 3s ease-in-out infinite;
+}
+
+@keyframes titleGlow {
+    0%, 100% {
+        opacity: 0.6;
+        box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 30px rgba(0, 188, 212, 0.8);
+    }
+}
+
+h2 {
+    color: var(--ocean-deep);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    margin-bottom: var(--space-md);
+    line-height: 1.3;
+}
+
+h3 {
+    color: var(--ocean-primary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+}
+
+p {
+    color: #374151;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: var(--space-sm);
+}
+
+/* ユーティリティクラス */
 .emoji {
     font-size: 1.2em;
-    margin-right: 10px;
+    margin-right: var(--space-sm);
+    display: inline-block;
+    animation: emojiFloat 3s ease-in-out infinite;
 }
 
+@keyframes emojiFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* ローディングアニメーション */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 188, 212, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--ocean-accent);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* スムーズスクロール */
+html {
+    scroll-behavior: smooth;
+}
+
+/* カスタムスクロールバー */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gradient-ocean);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-primary);
+}
+
+/* セレクションカラー */
+::selection {
+    background: rgba(0, 188, 212, 0.3);
+    color: var(--ocean-deep);
+}
+
+/* フォーカス指示器 */
+:focus-visible {
+    outline: 3px solid var(--ocean-accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* モダンボタンシステム */
 .btn {
-    background: linear-gradient(45deg, #667eea, #764ba2);
+    position: relative;
+    background: var(--gradient-primary);
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    padding: 16px 32px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s ease;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
     text-decoration: none;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: var(--shadow-depth-2);
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.2) 50%,
+        transparent 100%);
+    transition: left 0.6s ease;
+    z-index: -1;
 }
 
 .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 
+        var(--shadow-depth-3),
+        var(--shadow-glow);
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:active {
+    transform: translateY(-2px) scale(0.98);
+    transition: transform 0.1s ease;
 }
 
 .btn-small {
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 12px 24px;
+    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
 }
 
 .btn-success {
-    background: linear-gradient(45deg, #56ab2f, #a8e6cf);
+    background: linear-gradient(135deg, #16a085 0%, #2ecc71 100%);
+}
+
+.btn-success:hover {
+    box-shadow: 
+        var(--shadow-depth-3),
+        0 0 30px rgba(46, 204, 113, 0.4);
 }
 
 .btn-danger {
-    background: linear-gradient(45deg, #cb2d3e, #ef473a);
+    background: var(--gradient-coral);
+}
+
+.btn-danger:hover {
+    box-shadow: 
+        var(--shadow-depth-3),
+        0 0 30px rgba(255, 87, 34, 0.4);
+}
+
+.btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: var(--shadow-depth-1);
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: var(--shadow-depth-1);
 }
 
 .form-group {
@@ -81,18 +399,37 @@ label {
     color: #333;
 }
 
+/* モダンフォーム要素 */
 input, select {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
+    padding: 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: inherit;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: var(--shadow-depth-1);
 }
 
 input:focus, select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--ocean-accent);
+    box-shadow: 
+        var(--shadow-depth-2),
+        0 0 0 4px rgba(0, 188, 212, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+}
+
+input::placeholder {
+    color: #9ca3af;
+    transition: color 0.3s ease;
+}
+
+input:focus::placeholder {
+    color: #d1d5db;
 }
 
 .hidden {
@@ -124,16 +461,64 @@ input:focus, select:focus {
     grid-template-columns: repeat(4, 1fr);
 }
 
+/* レスポンシブデザイン */
 @media (max-width: 768px) {
     .grid-2, .grid-4 {
         grid-template-columns: 1fr;
     }
     
     .container {
-        padding: 20px;
+        padding: var(--space-lg);
+        margin: var(--space-sm);
+        border-radius: var(--radius-lg);
     }
     
     h1 {
-        font-size: 2em;
+        font-size: clamp(1.8rem, 6vw, 2.5rem);
+        margin-bottom: var(--space-lg);
+    }
+    
+    .btn {
+        padding: 14px 28px;
+        font-size: 1rem;
+    }
+    
+    input, select {
+        padding: 14px;
+        font-size: 16px; /* iOSズーム防止 */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: var(--space-sm);
+    }
+    
+    .container {
+        padding: var(--space-md);
+        margin: 0;
+        border-radius: var(--radius-md);
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+/* ハイコントラストモード対応 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ダークモード対応（将来拡張用） */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ocean-deep: #1a365d;
+        --ocean-primary: #2b77e6;
+        --ocean-light: #1e3a8a;
     }
 } 

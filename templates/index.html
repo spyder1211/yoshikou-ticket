@@ -137,27 +137,127 @@
 
 <!-- ステップ1: 人数選択 -->
 <div id="step1" class="step active">
+    <!-- 海底世界パーティクル背景 -->
+    <div class="ocean-particles">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="bubble bubble-3"></div>
+        <div class="bubble bubble-4"></div>
+        <div class="bubble bubble-5"></div>
+        <div class="sunlight sunlight-1"></div>
+        <div class="sunlight sunlight-2"></div>
+        <div class="sunlight sunlight-3"></div>
+    </div>
+    
     {% if today_date %}
-    <div style="text-align: center; margin-bottom: 20px;">
-        <span style="background: #e3f2fd; color: #1976d2; padding: 10px 20px; border-radius: 20px; font-weight: bold; border: 2px solid #bbdefb;">
-            本日: {{ today_date }} の予約
+    <div class="date-badge-3d">
+        <div class="badge-glow"></div>
+        <span class="badge-text">
+            🌊 本日: {{ today_date }} の海底探険
         </span>
     </div>
     {% endif %}
-    <h2>人数を選択してください</h2>
-    <div class="guests-grid" id="guests-grid-step1">
-        <!-- 1-10名の選択肢を表示 -->
-        <div class="guest-btn" data-guests="1" onclick="selectGuests(1)">1名</div>
-        <div class="guest-btn" data-guests="2" onclick="selectGuests(2)">2名</div>
-        <div class="guest-btn" data-guests="3" onclick="selectGuests(3)">3名</div>
-        <div class="guest-btn" data-guests="4" onclick="selectGuests(4)">4名</div>
-        <div class="guest-btn" data-guests="5" onclick="selectGuests(5)">5名</div>
-        <div class="guest-btn" data-guests="6" onclick="selectGuests(6)">6名</div>
-        <div class="guest-btn" data-guests="7" onclick="selectGuests(7)">7名</div>
-        <div class="guest-btn" data-guests="8" onclick="selectGuests(8)">8名</div>
-        <div class="guest-btn" data-guests="9" onclick="selectGuests(9)">9名</div>
-        <div class="guest-btn" data-guests="10" onclick="selectGuests(10)">10名</div>
+    
+    <div class="step-header-3d">
+        <h2 class="glowing-title">
+            <span class="title-icon">👥</span>
+            冒険者の人数を選択
+            <span class="title-decoration"></span>
+        </h2>
+        <p class="subtitle-glow">深海への旅路を共にする仲間の数をお選びください</p>
     </div>
+    
+    <!-- 3D人数選択グリッド -->
+    <div class="guests-grid-3d" id="guests-grid-step1">
+        <div class="guest-card-3d" data-guests="1" onclick="selectGuests(1)">
+            <div class="card-surface">
+                <div class="person-icon">🧑‍🤝‍🧑</div>
+                <div class="number-display">1</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="2" onclick="selectGuests(2)">
+            <div class="card-surface">
+                <div class="person-icon">👫</div>
+                <div class="number-display">2</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="3" onclick="selectGuests(3)">
+            <div class="card-surface">
+                <div class="person-icon">👨‍👩‍👧</div>
+                <div class="number-display">3</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="4" onclick="selectGuests(4)">
+            <div class="card-surface">
+                <div class="person-icon">👨‍👩‍👧‍👦</div>
+                <div class="number-display">4</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="5" onclick="selectGuests(5)">
+            <div class="card-surface">
+                <div class="person-icon">👥</div>
+                <div class="number-display">5</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="6" onclick="selectGuests(6)">
+            <div class="card-surface">
+                <div class="person-icon">👥</div>
+                <div class="number-display">6</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="7" onclick="selectGuests(7)">
+            <div class="card-surface">
+                <div class="person-icon">👥</div>
+                <div class="number-display">7</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="8" onclick="selectGuests(8)">
+            <div class="card-surface">
+                <div class="person-icon">👥</div>
+                <div class="number-display">8</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="9" onclick="selectGuests(9)">
+            <div class="card-surface">
+                <div class="person-icon">👥</div>
+                <div class="number-display">9</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+        <div class="guest-card-3d" data-guests="10" onclick="selectGuests(10)">
+            <div class="card-surface">
+                <div class="person-icon">👥</div>
+                <div class="number-display">10</div>
+                <div class="text-label">名</div>
+                <div class="ripple-effect"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 選択状態表示 -->
+    <div class="selection-status" id="guest-selection-status" style="display: none;">
+        <div class="status-glow"></div>
+        <span class="selected-count" id="selected-guest-count">0</span>
+        <span class="selected-text">名の冒険者が選択されました</span>
+    </div>
+    
     <div class="navigation">
         <a href="{{ url_for('index') }}" class="btn">
             ホームに戻る
@@ -170,13 +270,55 @@
 
 <!-- ステップ2: 時間選択 -->
 <div id="step2" class="step">
-    <h2>時間帯を選択してください</h2>
-    <div class="selected-guests-info">
-        <p>選択された人数: <span id="selected-guests-display">-</span>名</p>
+    <!-- 深海タイムライン背景 -->
+    <div class="deep-sea-timeline">
+        <div class="depth-indicator depth-1"></div>
+        <div class="depth-indicator depth-2"></div>
+        <div class="depth-indicator depth-3"></div>
+        <div class="sea-creature creature-1">🐟</div>
+        <div class="sea-creature creature-2">🌙</div>
+        <div class="sea-creature creature-3">🦀</div>
     </div>
-    <div class="time-slots" id="filtered-time-slots">
-        <!-- JavaScriptで動的に生成 -->
+    
+    <div class="step-header-3d">
+        <h2 class="glowing-title">
+            <span class="title-icon">⏰</span>
+            出航時刻を選択
+            <span class="title-decoration"></span>
+        </h2>
+        <p class="subtitle-glow">ネモ船長との海底探険の出発時刻をお選びください</p>
     </div>
+    
+    <!-- 選択済み人数表示 -->    
+    <div class="crew-info-3d">
+        <div class="crew-glow"></div>
+        <div class="crew-icon">👥</div>
+        <div class="crew-text">
+            <span class="crew-count" id="selected-guests-display">-</span>名の乗組員
+        </div>
+        <div class="crew-decoration"></div>
+    </div>
+    
+    <!-- 3D時間スロットコンテナー -->
+    <div class="time-voyage-container">
+        <div class="timeline-rail"></div>
+        <div class="time-slots-3d" id="filtered-time-slots">
+            <!-- JavaScriptで動的に生成 -->
+        </div>
+    </div>
+    
+    <!-- 選択状態表示 -->    
+    <div class="time-selection-status" id="time-selection-status" style="display: none;">
+        <div class="status-wave"></div>
+        <div class="selected-time-info">
+            <div class="time-icon">⚓</div>
+            <div class="time-details">
+                <span class="selected-time-text" id="selected-time-display"></span>
+                <span class="departure-text">出航準備が整いました</span>
+            </div>
+        </div>
+    </div>
+    
     <div class="navigation">
         <button onclick="goToStep1()" class="btn">
             戻る
@@ -189,13 +331,94 @@
 
 <!-- ステップ3: 確認・予約 -->
 <div id="step3" class="step">
-    <h2>予約内容を確認してください</h2>
-    <div class="ticket-info">
-        <p><strong>予約時間:</strong> <span id="confirm-time"></span></p>
-        <p><strong>人数:</strong> <span id="confirm-guests"></span>名</p>
-        <p><strong>予約日:</strong> <span id="confirm-date"></span></p>
+    <!-- 深海探険チケット背景 -->
+    <div class="nautilus-voyage-background">
+        <div class="porthole porthole-1"></div>
+        <div class="porthole porthole-2"></div>
+        <div class="porthole porthole-3"></div>
+        <div class="deep-current current-1"></div>
+        <div class="deep-current current-2"></div>
     </div>
     
+    <div class="step-header-3d">
+        <h2 class="glowing-title">
+            <span class="title-icon">🎆</span>
+            出航許可証発行
+            <span class="title-decoration"></span>
+        </h2>
+        <p class="subtitle-glow">ネモ船長のノーチラス号での深海探険を最終確認してください</p>
+    </div>
+    
+    <!-- 3Dノーチラス探険チケット -->
+    <div class="nautilus-ticket-3d">
+        <div class="ticket-hologram"></div>
+        <div class="ticket-surface">
+            <div class="ticket-header">
+                <div class="nautilus-emblem">⚓</div>
+                <div class="ticket-title">
+                    <div class="expedition-name">NAUTILUS EXPEDITION</div>
+                    <div class="subtitle">DEEP SEA ADVENTURE PASS</div>
+                </div>
+                <div class="security-seal">🔒</div>
+            </div>
+            
+            <div class="voyage-details">
+                <div class="detail-row">
+                    <div class="detail-label">📅 出航日時</div>
+                    <div class="detail-value departure-time" id="confirm-time"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">👥 乗組員数</div>
+                    <div class="detail-value crew-count" id="confirm-guests"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">🌊 探険日</div>
+                    <div class="detail-value expedition-date" id="confirm-date"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">🗺️ 目的地</div>
+                    <div class="detail-value destination">神秘の深海世界</div>
+                </div>
+            </div>
+            
+            <div class="ticket-features">
+                <div class="feature-badge">
+                    <div class="badge-icon">✨</div>
+                    <div class="badge-text">未知の生物遶遇</div>
+                </div>
+                <div class="feature-badge">
+                    <div class="badge-icon">🔮</div>
+                    <div class="badge-text">古代遺跡探索</div>
+                </div>
+                <div class="feature-badge">
+                    <div class="badge-icon">🌊</div>
+                    <div class="badge-text">深海の神秘</div>
+                </div>
+            </div>
+            
+            <div class="confirmation-zone">
+                <div class="warning-notice">
+                    <div class="warning-icon">⚠️</div>
+                    <div class="warning-text">一度確定した探険は変更できません</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ticket-perforation"></div>
+    </div>
+    
+    <!-- 確認アクション -->
+    <div class="expedition-actions">
+        <button onclick="goToStep2()" class="action-btn return-btn">
+            <span class="btn-icon">←</span>
+            <span class="btn-text">出航時刻を再選択</span>
+        </button>
+        <button onclick="confirmReservation()" class="action-btn confirm-btn">
+            <span class="btn-icon">⚓</span>
+            <span class="btn-text">探険を確定する</span>
+            <div class="btn-glow"></div>
+        </button>
+    </div>
     
     <div class="navigation">
         <button onclick="goToStep2()" class="btn">
@@ -273,34 +496,102 @@ let selectedGuests = null;
 let availableTimeslots = [];
 
 function selectGuests(guests) {
-    document.querySelectorAll('.guest-btn').forEach(btn => {
-        btn.classList.remove('selected');
+    // 既存の選択状態をリセット
+    document.querySelectorAll('.guest-card-3d').forEach(card => {
+        card.classList.remove('selected', 'pulse-animation');
     });
     
-    const btn = document.querySelector(`[data-guests="${guests}"]`);
-    btn.classList.add('selected');
+    // 新しいカードを選択
+    const selectedCard = document.querySelector(`[data-guests="${guests}"]`);
+    selectedCard.classList.add('selected', 'pulse-animation');
+    
+    // リップルエフェクトをトリガー
+    const ripple = selectedCard.querySelector('.ripple-effect');
+    ripple.classList.add('active');
+    setTimeout(() => ripple.classList.remove('active'), 600);
     
     selectedGuests = guests;
+    
+    // 選択状態表示を更新
+    const statusDiv = document.getElementById('guest-selection-status');
+    const countSpan = document.getElementById('selected-guest-count');
+    countSpan.textContent = guests;
+    statusDiv.style.display = 'flex';
+    statusDiv.classList.add('fade-in-up');
+    
+    // ボタンを有効化
     document.getElementById('next-step1').disabled = false;
     document.getElementById('floating-next-step1').disabled = false;
+    
+    // 成功フィードバック音（視覚的表現）
+    playSuccessAnimation();
+}
+
+function playSuccessAnimation() {
+    // 成功時のフィードバックアニメーション
+    const particles = document.querySelectorAll('.bubble');
+    particles.forEach((particle, index) => {
+        setTimeout(() => {
+            particle.style.animationDuration = '1s';
+            particle.style.transform = 'scale(1.5)';
+            setTimeout(() => {
+                particle.style.animationDuration = '4s';
+                particle.style.transform = 'scale(1)';
+            }, 1000);
+        }, index * 100);
+    });
 }
 
 function selectTime(time, available) {
     if (available <= 0) return;
     
     // 既存の選択を解除
-    document.querySelectorAll('.time-slot').forEach(slot => {
-        slot.classList.remove('selected');
+    document.querySelectorAll('.time-voyage-card').forEach(card => {
+        card.classList.remove('selected', 'departure-ready');
     });
     
     // 新しい選択を設定
-    const slot = document.querySelector(`[data-time="${time}"]`);
-    slot.classList.add('selected');
+    const selectedCard = document.querySelector(`[data-time="${time}"]`);
+    selectedCard.classList.add('selected', 'departure-ready');
+    
+    // 波紋エフェクトをトリガー
+    const waveEffect = selectedCard.querySelector('.wave-effect');
+    waveEffect.classList.add('active');
+    setTimeout(() => waveEffect.classList.remove('active'), 1000);
     
     selectedTime = time;
     
+    // 選択状態表示を更新
+    const statusDiv = document.getElementById('time-selection-status');
+    const timeDisplay = document.getElementById('selected-time-display');
+    timeDisplay.textContent = time;
+    statusDiv.style.display = 'flex';
+    statusDiv.classList.add('fade-in-scale');
+    
+    // ボタンを有効化
     document.getElementById('next-step2').disabled = false;
     document.getElementById('floating-next-step2').disabled = false;
+    
+    // 成功アニメーション
+    playTimeSelectionAnimation();
+}
+
+function playTimeSelectionAnimation() {
+    // 深海生物のアニメーション
+    const creatures = document.querySelectorAll('.sea-creature');
+    creatures.forEach((creature, index) => {
+        setTimeout(() => {
+            creature.style.animation = 'creatureSwim 2s ease-in-out';
+            setTimeout(() => {
+                creature.style.animation = 'creatureFloat 8s ease-in-out infinite';
+            }, 2000);
+        }, index * 300);
+    });
+    
+    // タイムラインレールのグローエフェクト
+    const rail = document.querySelector('.timeline-rail');
+    rail.classList.add('active-selection');
+    setTimeout(() => rail.classList.remove('active-selection'), 2000);
 }
 
 function goToStep1() {
@@ -344,21 +635,42 @@ async function goToStep2() {
         const timeSlots = document.getElementById('filtered-time-slots');
         timeSlots.innerHTML = '';
         
-        availableTimeslots.forEach(slot => {
-            const slotDiv = document.createElement('div');
-            slotDiv.className = `time-slot ${slot.available <= 0 ? 'disabled' : ''}`;
-            slotDiv.onclick = () => selectTime(slot.time, slot.available);
-            slotDiv.setAttribute('data-time', slot.time);
-            slotDiv.setAttribute('data-available', slot.available);
+        availableTimeslots.forEach((slot, index) => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = `time-voyage-card ${slot.available <= 0 ? 'disabled' : ''}`;
+            cardDiv.onclick = () => selectTime(slot.time, slot.available);
+            cardDiv.setAttribute('data-time', slot.time);
+            cardDiv.setAttribute('data-available', slot.available);
+            cardDiv.style.animationDelay = `${index * 0.1}s`;
             
-            slotDiv.innerHTML = `
-                <div class="time-text">${slot.time}</div>
-                <div class="availability">
-                    ${slot.available > 0 ? `空き: ${slot.available}名` : '満席'}
+            cardDiv.innerHTML = `
+                <div class="card-depth-layer"></div>
+                <div class="voyage-surface">
+                    <div class="departure-badge">
+                        <div class="badge-icon">⚓</div>
+                        <div class="time-info">
+                            <div class="departure-time">${slot.time}</div>
+                            <div class="voyage-status">Nautilus出航</div>
+                        </div>
+                    </div>
+                    
+                    <div class="capacity-info">
+                        <div class="capacity-icon">👥</div>
+                        <div class="capacity-status ${slot.available <= 0 ? 'full' : 'available'}">
+                            ${slot.available > 0 ? `空き: ${slot.available}名` : '満席'}
+                        </div>
+                    </div>
+                    
+                    <div class="depth-gauge">
+                        <div class="gauge-fill" style="width: ${Math.max(20, (slot.available / 10) * 100)}%"></div>
+                    </div>
+                    
+                    <div class="wave-effect"></div>
                 </div>
+                <div class="selection-glow"></div>
             `;
             
-            timeSlots.appendChild(slotDiv);
+            timeSlots.appendChild(cardDiv);
         });
     } catch (error) {
         console.error('Error fetching timeslots:', error);
@@ -383,8 +695,39 @@ function goToStep3() {
     
     // 確認内容を表示
     document.getElementById('confirm-time').textContent = selectedTime;
-    document.getElementById('confirm-guests').textContent = selectedGuests;
+    document.getElementById('confirm-guests').textContent = selectedGuests + '名';
     document.getElementById('confirm-date').textContent = new Date().toLocaleDateString('ja-JP');
+    
+    // チケット登場アニメーション
+    setTimeout(() => {
+        const ticket = document.querySelector('.nautilus-ticket-3d');
+        ticket.classList.add('ticket-reveal');
+        
+        // ホログラムエフェクト
+        const hologram = document.querySelector('.ticket-hologram');
+        hologram.classList.add('hologram-active');
+        
+        // 深海流のアニメーション
+        playDeepSeaAnimation();
+    }, 300);
+}
+
+function playDeepSeaAnimation() {
+    // 船窓の点滅
+    const portholes = document.querySelectorAll('.porthole');
+    portholes.forEach((porthole, index) => {
+        setTimeout(() => {
+            porthole.classList.add('active');
+        }, index * 500);
+    });
+    
+    // 深海流の流れ
+    const currents = document.querySelectorAll('.deep-current');
+    currents.forEach((current, index) => {
+        setTimeout(() => {
+            current.style.animation = 'currentFlow 3s ease-in-out infinite';
+        }, index * 800);
+    });
 }
 
 async function confirmReservation() {
