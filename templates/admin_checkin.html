@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class="nav-back">
-    <a href="/admin" class="btn">
+    <a href="{{ url_for('admin', date=selected_date) }}" class="btn">
         管理画面に戻る
     </a>
     <a href="{{ url_for('admin_logout') }}" class="btn btn-danger" style="margin-left: 10px;">
@@ -16,8 +16,32 @@
     </a>
 </div>
 
+<div class="admin-header" style="margin-bottom: 30px;">
+    <div class="admin-date-selector" style="text-align: center;">
+        <div style="margin-bottom: 15px;">
+            <span style="background: #28a745; color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold;">
+                {{ selected_date }} のチェックイン
+            </span>
+        </div>
+        <div class="date-buttons" style="display: flex; justify-content: center; gap: 10px;">
+            {% for date in valid_dates %}
+            <a href="{{ url_for('admin_checkin', date=date) }}" 
+               class="date-btn" 
+               style="padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: all 0.3s ease;
+                      {% if date == selected_date %}
+                      background: #28a745; color: white;
+                      {% else %}
+                      background: #f8f9fa; color: #333; border: 2px solid #28a745;
+                      {% endif %}">
+                {% if date == '2025-06-27' %}6月27日{% else %}6月28日{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 <div class="checkin-container">
-    <h1>チェックイン確認</h1>
+    <h1>チェックイン管理</h1>
     
     <div class="checkin-info">
         <h3>予約情報</h3>

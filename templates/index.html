@@ -137,6 +137,13 @@
 
 <!-- ステップ1: 人数選択 -->
 <div id="step1" class="step active">
+    {% if today_date %}
+    <div style="text-align: center; margin-bottom: 20px;">
+        <span style="background: #e3f2fd; color: #1976d2; padding: 10px 20px; border-radius: 20px; font-weight: bold; border: 2px solid #bbdefb;">
+            本日: {{ today_date }} の予約
+        </span>
+    </div>
+    {% endif %}
     <h2>人数を選択してください</h2>
     <div class="guests-grid" id="guests-grid-step1">
         <!-- 1-10名の選択肢を表示 -->

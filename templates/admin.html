@@ -9,8 +9,29 @@
 {% block content %}
 <div class="admin-header">
     <h1>2-5クラス企画<br>管理画面</h1>
+    <div class="admin-date-selector" style="margin: 20px 0; text-align: center;">
+        <div style="margin-bottom: 15px;">
+            <span style="background: #17a2b8; color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold;">
+                {{ selected_date }} の予約状況
+            </span>
+        </div>
+        <div class="date-buttons" style="display: flex; justify-content: center; gap: 10px;">
+            {% for date in valid_dates %}
+            <a href="{{ url_for('admin', date=date) }}" 
+               class="date-btn" 
+               style="padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: all 0.3s ease;
+                      {% if date == selected_date %}
+                      background: #007bff; color: white;
+                      {% else %}
+                      background: #f8f9fa; color: #333; border: 2px solid #007bff;
+                      {% endif %}">
+                {% if date == '2025-06-27' %}6月27日{% else %}6月28日{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
     <div class="nav-links">
-        
+       
         <a href="{{ url_for('admin_logout') }}" class="nav-link" style="background: #dc3545;">
             ログアウト
         </a>

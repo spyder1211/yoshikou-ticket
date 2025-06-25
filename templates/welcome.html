@@ -10,18 +10,19 @@
     padding: 60px 20px;
     background: 
         linear-gradient(135deg, rgba(0,20,40,0.8), rgba(0,77,122,0.7), rgba(0,135,147,0.6)),
-        url('{{ url_for("static", filename="img/image.png") }}') center/cover no-repeat;
+        url('{{ url_for("static", filename="img/S__8830991.jpg") }}') center/cover no-repeat;
     color: white;
     border-radius: 20px;
     margin-bottom: 40px;
     box-shadow: 0 12px 40px rgba(0,0,0,0.3);
     position: relative;
     min-height: 700px;
+    
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    /* overflow: ; */
 }
 
 .hero-section::before {
@@ -45,12 +46,13 @@
 .hero-title {
     font-size: 3.5rem;
     margin-bottom: 20px;
-    text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+    text-shadow: 
+        0 0 10px rgba(255,255,255,0.8),
+        0 0 20px rgba(255,255,255,0.6),
+        0 0 30px rgba(255,255,255,0.4),
+        3px 3px 8px rgba(0,0,0,0.9);
     font-weight: bold;
-    background: linear-gradient(45deg, #ffffff, #87ceeb, #20b2aa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
     position: relative;
     z-index: 2;
 }
@@ -236,6 +238,13 @@
     <p>
         ネモ船長と共に未知なる海底世界へ
     </p>
+    {% if today_date %}
+    <div style="margin-top: 20px;">
+        <span style="background: rgba(255,255,255,0.2); color: white; padding: 8px 20px; border-radius: 25px; font-weight: bold; backdrop-filter: blur(10px);">
+            本日: {{ today_date }} の冒険
+        </span>
+    </div>
+    {% endif %}
 </div>
 
 <!-- 既存予約がある場合の表示 -->

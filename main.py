@@ -14,8 +14,8 @@ app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'  # セッション管理用
 
 # 管理者認証設定
-ADMIN_USERNAME = 'admin'
-ADMIN_PASSWORD = 'password123'
+ADMIN_USERNAME = '2-5'
+ADMIN_PASSWORD = '1234'
 
 def admin_required(f):
     """管理者認証が必要なページのデコレータ"""
@@ -37,33 +37,71 @@ def admin_required(f):
 TIMESLOTS_FILE = 'timeslots.json'
 RESERVATIONS_FILE = 'reservations.json'
 
-# 初期時間帯データ
-DEFAULT_TIMESLOTS = [
-    {"time": "10:00 - 10:30", "total": 15, "available": 15},
-    {"time": "10:30 - 11:00", "total": 15, "available": 15},
-    {"time": "11:00 - 11:30", "total": 15, "available": 15},
-    {"time": "11:30 - 12:00", "total": 15, "available": 15},
-    {"time": "12:00 - 12:30", "total": 15, "available": 15},
-    {"time": "12:30 - 13:00", "total": 15, "available": 15},
-    {"time": "13:00 - 13:30", "total": 15, "available": 15},
-    {"time": "13:30 - 14:00", "total": 15, "available": 15},
-    {"time": "14:00 - 14:30", "total": 15, "available": 15},
-    {"time": "14:30 - 15:00", "total": 15, "available": 15}
-]
+# 初期時間帯データ（日付別）
+DEFAULT_TIMESLOTS = {
+    "2025-06-27": [
+        {"time": "10:00 - 10:30", "total": 15, "available": 15},
+        {"time": "10:30 - 11:00", "total": 15, "available": 15},
+        {"time": "11:00 - 11:30", "total": 15, "available": 15},
+        {"time": "11:30 - 12:00", "total": 15, "available": 15},
+        {"time": "12:00 - 12:30", "total": 15, "available": 15},
+        {"time": "12:30 - 13:00", "total": 15, "available": 15},
+        {"time": "13:00 - 13:30", "total": 15, "available": 15},
+        {"time": "13:30 - 14:00", "total": 15, "available": 15},
+        {"time": "14:00 - 14:30", "total": 15, "available": 15},
+        {"time": "14:30 - 15:00", "total": 15, "available": 15}
+    ],
+    "2025-06-28": [
+        {"time": "10:00 - 10:30", "total": 15, "available": 15},
+        {"time": "10:30 - 11:00", "total": 15, "available": 15},
+        {"time": "11:00 - 11:30", "total": 15, "available": 15},
+        {"time": "11:30 - 12:00", "total": 15, "available": 15},
+        {"time": "12:00 - 12:30", "total": 15, "available": 15},
+        {"time": "12:30 - 13:00", "total": 15, "available": 15},
+        {"time": "13:00 - 13:30", "total": 15, "available": 15},
+        {"time": "13:30 - 14:00", "total": 15, "available": 15},
+        {"time": "14:00 - 14:30", "total": 15, "available": 15},
+        {"time": "14:30 - 15:00", "total": 15, "available": 15}
+    ]
+}
 
-def load_timeslots():
-    """時間帯データを読み込み"""
+def get_today_date():
+    """当日の日付を取得（6月27日または28日）"""
+    today = datetime.now()
+    if today.month == 6 and today.day in [27, 28]:
+        return today.strftime('%Y-%m-%d')
+    else:
+        # テスト用：27日をデフォルトに（実際の運用では日付チェックを厳密に）
+        return '2025-06-27'
+
+def load_timeslots(date=None):
+    """指定日付の時間帯データを読み込み"""
+    if date is None:
+        date = get_today_date()
+    
     if os.path.exists(TIMESLOTS_FILE):
         with open(TIMESLOTS_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            all_timeslots = json.load(f)
+            return all_timeslots.get(date, [])
     else:
         save_timeslots(DEFAULT_TIMESLOTS)
-        return DEFAULT_TIMESLOTS
+        return DEFAULT_TIMESLOTS.get(date, [])
 
-def save_timeslots(timeslots):
+def save_timeslots(all_timeslots):
     """時間帯データを保存"""
     with open(TIMESLOTS_FILE, 'w', encoding='utf-8') as f:
-        json.dump(timeslots, f, ensure_ascii=False, indent=2)
+        json.dump(all_timeslots, f, ensure_ascii=False, indent=2)
+
+def save_timeslots_for_date(date, timeslots):
+    """指定日付の時間帯データを保存"""
+    if os.path.exists(TIMESLOTS_FILE):
+        with open(TIMESLOTS_FILE, 'r', encoding='utf-8') as f:
+            all_timeslots = json.load(f)
+    else:
+        all_timeslots = DEFAULT_TIMESLOTS.copy()
+    
+    all_timeslots[date] = timeslots
+    save_timeslots(all_timeslots)
 
 def load_reservations():
     """予約データを読み込み"""
@@ -114,6 +152,7 @@ def get_active_reservation():
 @app.route('/')
 def index():
     """トップページ（ウェルカム画面）"""
+    today_date = get_today_date()
     active_reservation = get_active_reservation()
     
     if active_reservation:
@@ -123,12 +162,14 @@ def index():
         active_reservation['qr_code_image'] = qr_code_data
     
     return render_template('welcome.html', 
-                         active_reservation=active_reservation)
+                         active_reservation=active_reservation,
+                         today_date=today_date)
 
 @app.route('/reserve')
 def reserve():
     """予約画面（人数選択から開始）"""
-    timeslots = load_timeslots()
+    today_date = get_today_date()
+    timeslots = load_timeslots(today_date)
     active_reservation = get_active_reservation()
     
     if active_reservation:
@@ -139,7 +180,8 @@ def reserve():
     
     return render_template('index.html', 
                          timeslots=timeslots, 
-                         active_reservation=active_reservation)
+                         active_reservation=active_reservation,
+                         today_date=today_date)
 
 @app.route('/my-ticket')
 def my_ticket():
@@ -200,19 +242,30 @@ def admin_logout():
 @admin_required
 def admin():
     """管理画面"""
-    timeslots = load_timeslots()
+    # 管理画面では日付を選択可能
+    selected_date = request.args.get('date', get_today_date())
+    
+    # 有効な日付のみ許可
+    valid_dates = ['2025-06-27', '2025-06-28']
+    if selected_date not in valid_dates:
+        selected_date = get_today_date()
+    
+    timeslots = load_timeslots(selected_date)
     reservations = load_reservations()
     
+    # 選択された日付の予約のみを対象とする
+    date_reservations = [r for r in reservations if r.get('date') == selected_date.replace('-', '/')]
+    
     # 統計を計算
-    total_reservations = len([r for r in reservations if r['status'] == 'active'])
-    total_checkins = len([r for r in reservations if r['status'] == 'checked'])
+    total_reservations = len([r for r in date_reservations if r['status'] == 'active'])
+    total_checkins = len([r for r in date_reservations if r['status'] == 'checked'])
     total_capacity = sum(slot['total'] for slot in timeslots)
     checkin_rate = round((total_checkins / total_reservations * 100) if total_reservations > 0 else 0)
     
     # 時間帯別統計を計算
     for slot in timeslots:
-        slot_reservations = [r for r in reservations if r['time'] == slot['time'] and r['status'] in ['active', 'checked']]
-        slot_checkins = [r for r in reservations if r['time'] == slot['time'] and r['status'] == 'checked']
+        slot_reservations = [r for r in date_reservations if r['time'] == slot['time'] and r['status'] in ['active', 'checked']]
+        slot_checkins = [r for r in date_reservations if r['time'] == slot['time'] and r['status'] == 'checked']
         
         slot['reserved'] = sum(r['guests'] for r in slot_reservations)
         slot['checked'] = sum(r['guests'] for r in slot_checkins)
@@ -225,21 +278,39 @@ def admin():
         'checkin_rate': checkin_rate
     }
     
-    return render_template('admin.html', timeslots=timeslots, stats=stats)
+    return render_template('admin.html', 
+                         timeslots=timeslots, 
+                         stats=stats, 
+                         selected_date=selected_date,
+                         valid_dates=valid_dates)
 
 @app.route('/admin/checkin')
 @admin_required
 def admin_checkin():
     """チェックイン画面"""
-    timeslots = load_timeslots()
+    # 管理画面では日付を選択可能
+    selected_date = request.args.get('date', get_today_date())
+    
+    # 有効な日付のみ許可
+    valid_dates = ['2025-06-27', '2025-06-28']
+    if selected_date not in valid_dates:
+        selected_date = get_today_date()
+        
+    timeslots = load_timeslots(selected_date)
     reservations = load_reservations()
+    
+    # 選択された日付の予約のみを対象とする
+    date_reservations = [r for r in reservations if r.get('date') == selected_date.replace('-', '/')]
     
     # 各時間帯の予約リストを作成
     for slot in timeslots:
-        slot['reservations'] = [r for r in reservations 
+        slot['reservations'] = [r for r in date_reservations 
                               if r['time'] == slot['time'] and r['status'] == 'active']
     
-    return render_template('admin_checkin.html', timeslots=timeslots)
+    return render_template('admin_checkin.html', 
+                         timeslots=timeslots, 
+                         selected_date=selected_date,
+                         valid_dates=valid_dates)
 
 @app.route('/admin/qr-checkin')
 @admin_required
@@ -344,10 +415,11 @@ def completion():
 @app.route('/api/timeslots/<int:guests>')
 def api_timeslots_by_guests(guests):
     """人数に基づいて利用可能な時間帯を取得するAPI"""
-    timeslots = load_timeslots()
+    today_date = get_today_date()
+    timeslots = load_timeslots(today_date)
     # 指定された人数で予約可能な時間帯のみをフィルタリング
     available_timeslots = [slot for slot in timeslots if slot['available'] >= guests]
-    return jsonify({'timeslots': available_timeslots})
+    return jsonify({'timeslots': available_timeslots, 'date': today_date})
 
 @app.route('/api/reserve', methods=['POST'])
 def api_reserve():
@@ -363,8 +435,10 @@ def api_reserve():
         guests = int(data.get('guests', 1))
         image_file = None
     
+    today_date = get_today_date()
+    
     # 時間帯データを更新
-    timeslots = load_timeslots()
+    timeslots = load_timeslots(today_date)
     for slot in timeslots:
         if slot['time'] == time:
             if slot['available'] >= guests:
@@ -409,7 +483,7 @@ def api_reserve():
     reservation = {
         'time': time,
         'guests': guests,
-        'date': datetime.now().strftime('%Y/%m/%d'),
+        'date': today_date.replace('-', '/'),
         'status': 'active',
         'qr_code': qr_code_text,
         'session_id': session_id,
@@ -419,7 +493,7 @@ def api_reserve():
     reservations.append(reservation)
     
     # データを保存
-    save_timeslots(timeslots)
+    save_timeslots_for_date(today_date, timeslots)
     save_reservations(reservations)
     
     # QRコードを生成（チェックイン完了画面のURLを含める）
@@ -434,7 +508,8 @@ def api_cancel():
     """予約キャンセルAPI"""
     session_id = get_session_id()
     reservations = load_reservations()
-    timeslots = load_timeslots()
+    today_date = get_today_date()
+    timeslots = load_timeslots(today_date)
     
     # このセッションのアクティブな予約を見つけてキャンセル
     for reservation in reversed(reservations):
@@ -449,7 +524,7 @@ def api_cancel():
                     break
             
             # データを保存
-            save_timeslots(timeslots)
+            save_timeslots_for_date(today_date, timeslots)
             save_reservations(reservations)
             
             return jsonify({'success': True})
