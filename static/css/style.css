@@ -1233,6 +1233,7 @@
 
 /* 海底世界のパーティクルエフェクト */
 .ocean-particles {
+    display: none; /* ちらつきの原因となるためアニメーションを無効化 */
     position: absolute;
     top: 0;
     left: 0;
@@ -1494,8 +1495,7 @@
     position: relative;
     height: 150px;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-style: preserve-3d;
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* シンプルなトランジションに変更 */
 }
 
 .card-surface {
@@ -1510,47 +1510,39 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.1),
-        0 5px 15px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* 影をシンプルに */
     border: 1px solid rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    transition: all 0.4s ease;
+    transition: background-color 0.3s ease, color 0.3s ease; /* シンプルなトランジション */
     overflow: hidden;
 }
 
 .guest-card-3d:hover .card-surface {
-    transform: translateZ(20px) rotateX(5deg);
-    box-shadow: 
-        0 25px 50px rgba(0, 0, 0, 0.15),
-        0 10px 30px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    /* ホバー時の3D効果を削除 */
+    background: linear-gradient(135deg, 
+        rgba(245, 245, 245, 0.9) 0%, 
+        rgba(235, 235, 235, 0.7) 100%);
 }
 
 .guest-card-3d.selected .card-surface {
     background: linear-gradient(135deg, 
-        rgba(102, 126, 234, 0.9) 0%, 
-        rgba(118, 75, 162, 0.9) 100%);
+        #667eea 0%, 
+        #764ba2 100%);
     color: white;
-    transform: translateZ(30px) rotateX(10deg);
-    box-shadow: 
-        0 30px 60px rgba(102, 126, 234, 0.3),
-        0 15px 35px rgba(118, 75, 162, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    /* 3D効果と複雑な影を削除 */
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
 .person-icon {
     font-size: 2.5rem;
     margin-bottom: 10px;
-    animation: iconPulse 2s ease-in-out infinite;
+    /* animation: iconPulse 2s ease-in-out infinite; */ /* アニメーションを削除 */
 }
 
 .number-display {
     font-size: 2rem;
     font-weight: bold;
     margin-bottom: 5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: none; /* テキストシャドウを削除 */
 }
 
 .text-label {
@@ -1562,54 +1554,23 @@
 .guest-card-3d.selected .person-icon,
 .guest-card-3d.selected .number-display,
 .guest-card-3d.selected .text-label {
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    text-shadow: none; /* テキストシャドウを削除 */
 }
 
-@keyframes iconPulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
+/* @keyframes iconPulse { ... } */ /* キーフレームを削除 */
 
-/* リップルエフェクト */
+/* リップルエフェクトを無効化 */
 .ripple-effect {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    transition: all 0.6s ease;
+    display: none;
 }
 
-.ripple-effect.active {
-    width: 200px;
-    height: 200px;
-    opacity: 0;
-}
-
-/* パルスアニメーション */
+/* パルスアニメーションを無効化 */
 .pulse-animation {
-    animation: cardPulse 0.6s ease-out;
+    /* animation: cardPulse 0.6s ease-out; */ /* アニメーションを削除 */
 }
 
-@keyframes cardPulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
+/* @keyframes cardPulse { ... } */ /* キーフレームを削除 */
+
 
 /* 選択状態表示 */
 .selection-status {
