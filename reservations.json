@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "time": "14:15 - 14:45",
+    "guests": 4,
+    "date": "2025/06/27",
+    "status": "cancelled",
+    "qr_code": "QR-14151445-4-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T22:45:05.817456",
+    "user_image": null
+  },
+  {
+    "time": "13:45 - 14:15",
+    "guests": 2,
+    "date": "2025/06/27",
+    "status": "active",
+    "qr_code": "QR-13451415-2-58917854",
+    "session_id": "58917854-e6ad-4e02-99df-09a4d5e229ae",
+    "created_at": "2025-06-26T22:45:23.202451",
+    "user_image": null
+  }
+]

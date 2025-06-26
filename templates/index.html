@@ -209,46 +209,6 @@
                 <div class="ripple-effect"></div>
             </div>
         </div>
-        <div class="guest-card-3d" data-guests="6" onclick="selectGuests(6)">
-            <div class="card-surface">
-                <div class="person-icon">⬢</div>
-                <div class="number-display">6</div>
-                <div class="text-label">名</div>
-                <div class="ripple-effect"></div>
-            </div>
-        </div>
-        <div class="guest-card-3d" data-guests="7" onclick="selectGuests(7)">
-            <div class="card-surface">
-                <div class="person-icon">✶</div>
-                <div class="number-display">7</div>
-                <div class="text-label">名</div>
-                <div class="ripple-effect"></div>
-            </div>
-        </div>
-        <div class="guest-card-3d" data-guests="8" onclick="selectGuests(8)">
-            <div class="card-surface">
-                <div class="person-icon">✳</div>
-                <div class="number-display">8</div>
-                <div class="text-label">名</div>
-                <div class="ripple-effect"></div>
-            </div>
-        </div>
-        <div class="guest-card-3d" data-guests="9" onclick="selectGuests(9)">
-            <div class="card-surface">
-                <div class="person-icon">✴</div>
-                <div class="number-display">9</div>
-                <div class="text-label">名</div>
-                <div class="ripple-effect"></div>
-            </div>
-        </div>
-        <div class="guest-card-3d" data-guests="10" onclick="selectGuests(10)">
-            <div class="card-surface">
-                <div class="person-icon">⚜️</div>
-                <div class="number-display">10</div>
-                <div class="text-label">名</div>
-                <div class="ripple-effect"></div>
-            </div>
-        </div>
     </div>
     
     <!-- 選択状態表示 -->
@@ -342,7 +302,6 @@
     
     <div class="step-header-3d">
         <h2 class="glowing-title">
-            <span class="title-icon">🎆</span>
             出航許可証発行
             <span class="title-decoration"></span>
         </h2>
@@ -364,19 +323,19 @@
             
             <div class="voyage-details">
                 <div class="detail-row">
-                    <div class="detail-label">📅 出航日時</div>
+                    <div class="detail-label">出航日時</div>
                     <div class="detail-value departure-time" id="confirm-time"></div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">👥 乗組員数</div>
+                    <div class="detail-label">乗組員数</div>
                     <div class="detail-value crew-count" id="confirm-guests"></div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">🌊 探険日</div>
+                    <div class="detail-label">探険日</div>
                     <div class="detail-value expedition-date" id="confirm-date"></div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">🗺️ 目的地</div>
+                    <div class="detail-label">目的地</div>
                     <div class="detail-value destination">神秘の深海世界</div>
                 </div>
             </div>
@@ -387,37 +346,14 @@
                     <div class="badge-text">未知の生物遶遇</div>
                 </div>
                 <div class="feature-badge">
-                    <div class="badge-icon">🔮</div>
-                    <div class="badge-text">古代遺跡探索</div>
-                </div>
-                <div class="feature-badge">
                     <div class="badge-icon">🌊</div>
                     <div class="badge-text">深海の神秘</div>
                 </div>
             </div>
             
-            <div class="confirmation-zone">
-                <div class="warning-notice">
-                    <div class="warning-icon">⚠️</div>
-                    <div class="warning-text">一度確定した探険は変更できません</div>
-                </div>
-            </div>
         </div>
         
         <div class="ticket-perforation"></div>
-    </div>
-    
-    <!-- 確認アクション -->
-    <div class="expedition-actions">
-        <button onclick="goToStep2()" class="action-btn return-btn">
-            <span class="btn-icon">←</span>
-            <span class="btn-text">出航時刻を再選択</span>
-        </button>
-        <button onclick="confirmReservation()" class="action-btn confirm-btn">
-            <span class="btn-icon">⚓</span>
-            <span class="btn-text">探険を確定する</span>
-            <div class="btn-glow"></div>
-        </button>
     </div>
     
     <div class="navigation">
