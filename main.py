@@ -40,28 +40,23 @@ RESERVATIONS_FILE = 'reservations.json'
 # 初期時間帯データ（日付別）
 DEFAULT_TIMESLOTS = {
     "2025-06-27": [
-        {"time": "10:00 - 10:30", "total": 15, "available": 15},
-        {"time": "10:30 - 11:00", "total": 15, "available": 15},
-        {"time": "11:00 - 11:30", "total": 15, "available": 15},
-        {"time": "11:30 - 12:00", "total": 15, "available": 15},
-        {"time": "12:00 - 12:30", "total": 15, "available": 15},
-        {"time": "12:30 - 13:00", "total": 15, "available": 15},
-        {"time": "13:00 - 13:30", "total": 15, "available": 15},
-        {"time": "13:30 - 14:00", "total": 15, "available": 15},
-        {"time": "14:00 - 14:30", "total": 15, "available": 15},
-        {"time": "14:30 - 15:00", "total": 15, "available": 15}
+        {"time": "13:15 - 13:45", "total": 15, "available": 15},
+        {"time": "13:45 - 14:15", "total": 15, "available": 15},
+        {"time": "14:15 - 14:45", "total": 15, "available": 15},
+        {"time": "14:45 - 15:15", "total": 15, "available": 15},
+        {"time": "15:15 - 15:45", "total": 15, "available": 15},
+        {"time": "15:45 - 16:15", "total": 15, "available": 15}
     ],
     "2025-06-28": [
-        {"time": "10:00 - 10:30", "total": 15, "available": 15},
-        {"time": "10:30 - 11:00", "total": 15, "available": 15},
-        {"time": "11:00 - 11:30", "total": 15, "available": 15},
-        {"time": "11:30 - 12:00", "total": 15, "available": 15},
-        {"time": "12:00 - 12:30", "total": 15, "available": 15},
-        {"time": "12:30 - 13:00", "total": 15, "available": 15},
-        {"time": "13:00 - 13:30", "total": 15, "available": 15},
-        {"time": "13:30 - 14:00", "total": 15, "available": 15},
-        {"time": "14:00 - 14:30", "total": 15, "available": 15},
-        {"time": "14:30 - 15:00", "total": 15, "available": 15}
+        {"time": "11:20 - 11:50", "total": 15, "available": 15},
+        {"time": "11:50 - 12:20", "total": 15, "available": 15},
+        {"time": "12:20 - 12:50", "total": 15, "available": 15},
+        {"time": "12:50 - 13:20", "total": 15, "available": 15},
+        {"time": "13:20 - 13:50", "total": 15, "available": 15},
+        {"time": "13:50 - 14:20", "total": 15, "available": 15},
+        {"time": "14:20 - 14:50", "total": 15, "available": 15},
+        {"time": "14:50 - 15:20", "total": 15, "available": 15},
+        {"time": "15:20 - 15:50", "total": 15, "available": 15}
     ]
 }
 
@@ -80,12 +75,20 @@ def load_timeslots(date=None):
         date = get_today_date()
     
     if os.path.exists(TIMESLOTS_FILE):
-        with open(TIMESLOTS_FILE, 'r', encoding='utf-8') as f:
-            all_timeslots = json.load(f)
-            return all_timeslots.get(date, [])
-    else:
-        save_timeslots(DEFAULT_TIMESLOTS)
-        return DEFAULT_TIMESLOTS.get(date, [])
+        try:
+            with open(TIMESLOTS_FILE, 'r', encoding='utf-8') as f:
+                all_timeslots = json.load(f)
+            # データが辞書形式であることを確認
+            if isinstance(all_timeslots, dict):
+                return all_timeslots.get(date, [])
+        except (json.JSONDecodeError, FileNotFoundError):
+            # ファイルが空、破損、または存在しない場合は、デフォルト値で再生成
+            pass
+
+    # ファイルが存在しない、またはデータ形式が不正な場合はデフォルト値を使用
+    print(f"警告: {TIMESLOTS_FILE} が不正、または存在しません。デフォルト値で再生成します。")
+    save_timeslots(DEFAULT_TIMESLOTS)
+    return DEFAULT_TIMESLOTS.get(date, [])
 
 def save_timeslots(all_timeslots):
     """時間帯データを保存"""
