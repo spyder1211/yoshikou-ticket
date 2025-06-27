@@ -9,6 +9,7 @@ import random
 import string
 import uuid
 from functools import wraps
+import pytz
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this-in-production'  # セッション管理用
@@ -61,8 +62,10 @@ DEFAULT_TIMESLOTS = {
 }
 
 def get_today_date():
-    """当日の日付を取得（6月27日または28日）"""
-    today = datetime.now()
+    """当日の日付を取得（日本時刻で6月27日または28日）"""
+    # 日本のタイムゾーンを指定
+    japan_tz = pytz.timezone('Asia/Tokyo')
+    today = datetime.now(japan_tz)
     if today.month == 6 and today.day in [27, 28]:
         return today.strftime('%Y-%m-%d')
     else:
@@ -154,12 +157,13 @@ def get_session_id():
 def set_session_cookie(response):
     """レスポンスにセッションIDのクッキーを設定"""
     session_id = get_session_id()
-    # 31日間有効なクッキーとして設定（CLAUDE.mdの仕様通り）
-    expires = datetime.now() + timedelta(days=31)
+    # 31日間有効なクッキーとして設定（日本時刻基準）
+    japan_tz = pytz.timezone('Asia/Tokyo')
+    expires = datetime.now(japan_tz) + timedelta(days=31)
     response.set_cookie('user_session_id', session_id, 
                       expires=expires, 
                       httponly=True,
-                      secure=False)  # HTTPSを使用する場合はTrueに設定
+                      secure=True)  # HTTPSを使用する場合はTrueに設定
     return response
 
 def get_active_reservation():
@@ -239,12 +243,13 @@ def admin_login():
             # レスポンスを作成してクッキーを設定
             response = make_response(redirect(url_for('admin')))
             
-            # 24時間有効なクッキーを設定
-            expires = datetime.now() + timedelta(days=1)
+            # 24時間有効なクッキーを設定（日本時刻基準）
+            japan_tz = pytz.timezone('Asia/Tokyo')
+            expires = datetime.now(japan_tz) + timedelta(days=1)
             response.set_cookie('admin_authenticated', 'true', 
                               expires=expires, 
                               httponly=True,
-                              secure=False)  # HTTPSを使用する場合はTrueに設定
+                              secure=True)  # HTTPSを使用する場合はTrueに設定
             
             return response
         else:
