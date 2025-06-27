@@ -137,10 +137,30 @@ def generate_qr_code(text):
     return f"data:image/png;base64,{img_str}"
 
 def get_session_id():
-    """セッションIDを取得または生成"""
+    """セッションIDを取得または生成（クッキーからの復元対応）"""
+    # まずFlaskセッションから確認
     if 'session_id' not in session:
-        session['session_id'] = str(uuid.uuid4())
+        # Flaskセッションにない場合、クッキーから復元を試行
+        cookie_session_id = request.cookies.get('user_session_id')
+        if cookie_session_id:
+            # クッキーにセッションIDがある場合は復元
+            session['session_id'] = cookie_session_id
+        else:
+            # クッキーにもない場合は新規生成
+            session['session_id'] = str(uuid.uuid4())
+    
     return session['session_id']
+
+def set_session_cookie(response):
+    """レスポンスにセッションIDのクッキーを設定"""
+    session_id = get_session_id()
+    # 31日間有効なクッキーとして設定（CLAUDE.mdの仕様通り）
+    expires = datetime.now() + timedelta(days=31)
+    response.set_cookie('user_session_id', session_id, 
+                      expires=expires, 
+                      httponly=True,
+                      secure=False)  # HTTPSを使用する場合はTrueに設定
+    return response
 
 def get_active_reservation():
     """このセッションのアクティブな予約を取得"""
@@ -164,9 +184,10 @@ def index():
         qr_code_data = generate_qr_code(qr_url)
         active_reservation['qr_code_image'] = qr_code_data
     
-    return render_template('welcome.html', 
-                         active_reservation=active_reservation,
-                         today_date=today_date)
+    response = make_response(render_template('welcome.html', 
+                                           active_reservation=active_reservation,
+                                           today_date=today_date))
+    return set_session_cookie(response)
 
 @app.route('/reserve')
 def reserve():
@@ -181,10 +202,11 @@ def reserve():
         qr_code_data = generate_qr_code(qr_url)
         active_reservation['qr_code_image'] = qr_code_data
     
-    return render_template('index.html', 
-                         timeslots=timeslots, 
-                         active_reservation=active_reservation,
-                         today_date=today_date)
+    response = make_response(render_template('index.html', 
+                                           timeslots=timeslots, 
+                                           active_reservation=active_reservation,
+                                           today_date=today_date))
+    return set_session_cookie(response)
 
 @app.route('/my-ticket')
 def my_ticket():
@@ -199,8 +221,9 @@ def my_ticket():
     qr_code_data = generate_qr_code(qr_url)
     active_reservation['qr_code_image'] = qr_code_data
     
-    return render_template('my_ticket.html', 
-                         active_reservation=active_reservation)
+    response = make_response(render_template('my_ticket.html', 
+                                           active_reservation=active_reservation))
+    return set_session_cookie(response)
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
@@ -387,6 +410,9 @@ def public_checkin_complete():
     if not reservation:
         return redirect(url_for('index'))
     
+    # セッションを復元（QRコードアクセス時のセッション切れ対策）
+    session['session_id'] = reservation['session_id']
+    
     # チェックイン済みでない場合は、チェックイン処理を実行
     if reservation.get('status') == 'active':
         reservation['status'] = 'checked'
@@ -504,7 +530,8 @@ def api_reserve():
     qr_code_image = generate_qr_code(qr_url)
     reservation['qr_code_image'] = qr_code_image
     
-    return jsonify({'success': True, 'reservation': reservation})
+    response = make_response(jsonify({'success': True, 'reservation': reservation}))
+    return set_session_cookie(response)
 
 @app.route('/api/cancel', methods=['POST'])
 def api_cancel():
