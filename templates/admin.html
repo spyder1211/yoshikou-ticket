@@ -57,9 +57,14 @@
 
 <!-- 時間帯管理 -->
 <div class="time-slots-section">
-    <h2 class="section-title">
-        時間帯別状況
-    </h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 class="section-title">
+            時間帯別状況
+        </h2>
+        <button onclick="saveAllCapacities()" class="btn" style="background: #28a745; color: white; padding: 10px 20px; font-size: 16px; font-weight: bold;">
+            全ての変更を保存
+        </button>
+    </div>
     
     {% for slot in timeslots %}
     <div class="time-slot-admin">
@@ -86,7 +91,9 @@
             <input type="number" class="capacity-input" 
                    value="{{ slot.total }}" 
                    min="0" max="50"
-                   onchange="updateCapacity({{ loop.index0 }}, this.value)">
+                   data-original="{{ slot.total }}"
+                   data-index="{{ loop.index0 }}"
+                   oninput="markChanged({{ loop.index0 }})">
             <button class="capacity-btn" onclick="changeCapacity({{ loop.index0 }}, 1)">+</button>
         </div>
         
@@ -147,35 +154,84 @@ function changeCapacity(index, change) {
     const input = document.querySelectorAll('.capacity-input')[index];
     const newValue = Math.max(0, Math.min(50, parseInt(input.value) + change));
     input.value = newValue;
-    updateCapacity(index, newValue);
+    markChanged(index);
 }
 
-async function updateCapacity(index, total) {
+function markChanged(index) {
+    const input = document.querySelectorAll('.capacity-input')[index];
+    const original = parseInt(input.dataset.original);
+    const current = parseInt(input.value);
+    
+    // 変更があった場合は背景色を変更
+    if (current !== original) {
+        input.style.backgroundColor = '#fff3cd';
+        input.style.borderColor = '#ffc107';
+    } else {
+        input.style.backgroundColor = '';
+        input.style.borderColor = '';
+    }
+    
+    updateSaveButtonState();
+}
+
+function updateSaveButtonState() {
+    const inputs = document.querySelectorAll('.capacity-input');
+    const saveButton = document.querySelector('button[onclick="saveAllCapacities()"]');
+    let hasChanges = false;
+    
+    inputs.forEach(input => {
+        const original = parseInt(input.dataset.original);
+        const current = parseInt(input.value);
+        if (current !== original) {
+            hasChanges = true;
+        }
+    });
+    
+    if (hasChanges) {
+        saveButton.style.background = '#ffc107';
+        saveButton.style.color = '#212529';
+        saveButton.textContent = '変更を保存 *';
+    } else {
+        saveButton.style.background = '#28a745';
+        saveButton.style.color = 'white';
+        saveButton.textContent = '全ての変更を保存';
+    }
+}
+
+async function saveAllCapacities() {
+    const inputs = document.querySelectorAll('.capacity-input');
+    const capacities = Array.from(inputs).map(input => parseInt(input.value));
+    
     try {
-        const response = await fetch('/api/update_capacity', {
+        const response = await fetch('/api/save_all_capacities', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                index: index,
-                total: parseInt(total)
+                capacities: capacities
             })
         });
         
         const result = await response.json();
         
         if (result.success) {
-            // ページをリロードして最新状態を表示
-            setTimeout(() => {
-                location.reload();
-            }, 500);
+            alert('全ての定員数を保存しました');
+            // 元の値を更新
+            inputs.forEach((input, index) => {
+                input.dataset.original = input.value;
+                input.style.backgroundColor = '';
+                input.style.borderColor = '';
+            });
+            updateSaveButtonState();
+            // ページをリロードして統計情報を更新
+            location.reload();
         } else {
-            alert('定員数の更新に失敗しました: ' + result.message);
+            alert('保存に失敗しました: ' + result.message);
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('定員数の更新中にエラーが発生しました');
+        alert('保存中にエラーが発生しました');
     }
 }
 
@@ -284,9 +340,5 @@ async function resetAllData() {
     }
 }
 
-// 10秒ごとに統計を更新
-setInterval(() => {
-    location.reload();
-}, 10000);
 </script>
 {% endblock %} 

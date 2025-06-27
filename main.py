@@ -592,7 +592,8 @@ def api_update_capacity():
     index = int(data.get('index'))
     new_total = int(data.get('total'))
     
-    timeslots = load_timeslots()
+    today_date = get_today_date()
+    timeslots = load_timeslots(today_date)
     if 0 <= index < len(timeslots):
         old_total = timeslots[index]['total']
         timeslots[index]['total'] = new_total
@@ -601,10 +602,35 @@ def api_update_capacity():
         diff = new_total - old_total
         timeslots[index]['available'] += diff
         
-        save_timeslots(timeslots)
+        save_timeslots_for_date(today_date, timeslots)
         return jsonify({'success': True})
     
     return jsonify({'success': False, 'message': '無効なインデックスです'})
+
+@app.route('/api/save_all_capacities', methods=['POST'])
+@admin_required
+def api_save_all_capacities():
+    """全定員数一括保存API"""
+    data = request.json
+    capacities = data.get('capacities', [])
+    
+    today_date = get_today_date()
+    timeslots = load_timeslots(today_date)
+    
+    try:
+        for i, new_total in enumerate(capacities):
+            if 0 <= i < len(timeslots):
+                old_total = timeslots[i]['total']
+                timeslots[i]['total'] = int(new_total)
+                
+                # 利用可能数も調整
+                diff = int(new_total) - old_total
+                timeslots[i]['available'] += diff
+        
+        save_timeslots_for_date(today_date, timeslots)
+        return jsonify({'success': True, 'message': '全ての定員数を保存しました'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': f'保存に失敗しました: {str(e)}'})
 
 @app.route('/api/reset_reservations', methods=['POST'])
 @admin_required
